@@ -1,0 +1,199 @@
+<section class="flex items-center justify-center px-4 -mt-2 py-10 sm:px-6 sm:py-16 lg:px-8 lg:py-24">
+  <div class="xl:mx-auto xl:w-full xl:max-w-sm 2xl:max-w-md">
+    <h1 class="text-center text-2xl font-bold leading-tight text-black">
+      Sign up to create account
+    </h1>
+    <p class="mt-2 text-center text-base text-gray-600">
+      Already have an account?
+      <a
+        href="#"
+        class="font-medium text-black transition-all duration-200 hover:underline"
+      >
+        Sign In
+      </a>
+    </p>
+    <form action="#" method="POST" class="mt-8" enctype="multipart/form-data">
+      <div class="space-y-5">
+        <div>
+          <label for="name" class="text-base font-medium text-gray-900">Full Name</label>
+          <div class="mt-2">
+            <input
+              class="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
+              type="text"
+              id="name"
+              name="name"
+              required
+              placeholder="John Doe"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label for="email" class="text-base font-medium text-gray-900">Email address</label>
+          <div class="mt-2">
+            <input
+              class="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
+              type="email"
+              id="email"
+              name="email"
+              required
+              placeholder="john@example.com"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label for="password" class="text-base font-medium text-gray-900">Password</label>
+          <div class="mt-2">
+            <input
+              class="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
+              type="password"
+              id="password"
+              name="password"
+              required
+              placeholder="••••••••"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label for="confirm-password" class="text-base font-medium text-gray-900">Confirm Password</label>
+          <div class="mt-2">
+            <input
+              class="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
+              type="password"
+              id="confirm-password"
+              name="confirm-password"
+              required
+              placeholder="••••••••"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label for="height" class="text-base font-medium text-gray-900">Height (cm)</label>
+          <div class="mt-2">
+            <input
+              class="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
+              type="number"
+              id="height"
+              name="height"
+              required
+              placeholder="175"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label for="weight" class="text-base font-medium text-gray-900">Weight (kg)</label>
+          <div class="mt-2">
+            <input
+              class="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
+              type="number"
+              id="weight"
+              name="weight"
+              required
+              placeholder="70"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label for="gender" class="text-base font-medium text-gray-900">Gender</label>
+          <div class="mt-2">
+            <select
+              class="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
+              id="gender"
+              name="gender"
+              required
+            >
+              <option value="" disabled selected>Select Gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label for="dob" class="text-base font-medium text-gray-900">Date of Birth</label>
+          <div class="mt-2">
+            <input
+              class="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
+              type="date"
+              id="dob"
+              name="dob"
+              required
+            />
+          </div>
+        </div>
+
+        <fieldset>
+          <legend class="text-base font-medium text-gray-900">Role</legend>
+          <div class="mt-2 flex space-x-4">
+            <div>
+              <input type="radio" id="role-athlete" name="role" value="athlete" required class="form-radio text-black">
+              <label for="role-athlete" class="ml-2">Athlete</label>
+            </div>
+            <div>
+              <input type="radio" id="role-coach" name="role" value="coach" required class="form-radio text-black">
+              <label for="role-coach" class="ml-2">Coach</label>
+            </div>
+          </div>
+        </fieldset>
+
+        <div>
+          <label for="category" class="text-base font-medium text-gray-900">Category</label>
+          <div class="mt-2">
+            <input
+              class="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
+              type="text"
+              id="category"
+              name="category"
+              required
+              placeholder="e.g., Swimming, Running, etc."
+            />
+          </div>
+        </div>
+
+        <div>
+          <label for="photo" class="text-base font-medium text-gray-900">Profile Photo</label>
+          <div class="mt-2">
+            <input
+              class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-black/10 file:text-black hover:file:bg-black/20"
+              type="file"
+              id="photo"
+              name="photo"
+              accept="image/*"
+              required
+            />
+          </div>
+        </div>
+
+        <div>
+          <button
+            type="submit"
+            class="inline-flex w-full items-center justify-center rounded-md bg-black px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-black/80"
+          >
+            Create Account
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="ml-2"
+            >
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
