@@ -1,12 +1,19 @@
 import { Component } from '@angular/core';
+import { Router, RouterLink, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [],
+  imports: [RouterModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
 export class NavbarComponent {
+  constructor(private router:Router){}
+
+
+  loginUser(){
+    this.router.navigate(['/login']);
+  }
 
 }
