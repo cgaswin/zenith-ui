@@ -1,0 +1,17 @@
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold mb-6">Athletes</h1>
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    @for (athlete of athletes; track athlete.id) {
+      <div class="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300"
+           [routerLink]="['/profile', athlete.id]">
+        <img [src]="athlete.photoUrl || 'assets/default-avatar.png'"
+             [alt]="athlete.name"
+             class="w-full h-48 object-cover">
+        <div class="p-4">
+          <h2 class="text-xl font-semibold mb-2">{{ athlete.name }}</h2>
+          <p class="text-gray-600">{{ athlete.category }}</p>
+        </div>
+      </div>
+    }
+  </div>
+</div>

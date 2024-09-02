@@ -1,0 +1,33 @@
+<!-- requests.component.html -->
+
+<div class="p-6">
+  <h1 class="text-2xl font-bold mb-4">Coaching Requests</h1>
+
+  <div *ngIf="requests; else noRequests">
+    <table class="min-w-full bg-white border border-gray-200">
+      <thead>
+        <tr>
+          <th class="px-4 py-2 border-b">Request ID</th>
+          <th class="px-4 py-2 border-b">Request Date</th>
+          <th class="px-4 py-2 border-b">Status</th>
+          <th class="px-4 py-2 border-b">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let request of requests">
+          <td class="px-4 py-2 border-b">{{ request.id }}</td>
+          <td class="px-4 py-2 border-b">{{ request.requestDate | date }}</td>
+          <td class="px-4 py-2 border-b">{{ request.status }}</td>
+          <td class="px-4 py-2 border-b">
+            <button (click)="updateStatus(request.id, 'APPROVED')" class="bg-green-500 text-white px-4 py-2 rounded">Accept</button>
+            <button (click)="updateStatus(request.id, 'REJECTED')" class="bg-red-500 text-white px-4 py-2 rounded ml-2">Reject</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <ng-template #noRequests>
+    <p>No coaching requests found.</p>
+  </ng-template>
+</div>

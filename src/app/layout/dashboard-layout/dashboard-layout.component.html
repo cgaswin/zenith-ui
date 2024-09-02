@@ -1,0 +1,53 @@
+<div class="flex h-screen bg-gray-100">
+  <!-- Sidebar -->
+  <aside class="w-1/6 bg-orange-500 text-white overflow-y-auto">
+    <div class="p-4">
+      <h1 class="text-2xl font-semibold">Dashboard</h1>
+    </div>
+    <nav class="mt-8">
+      <ul class="space-y-2">
+        <li>
+          <a routerLink="/dashboard" routerLinkActive="bg-orange-600" class="block px-4 py-2 hover:bg-orange-600 transition-colors">Dashboard</a>
+        </li>
+        <li>
+          <a routerLink="/dashboard/profile" routerLinkActive="bg-orange-600" class="block px-4 py-2 hover:bg-orange-600 transition-colors">Profile</a>
+        </li>
+        <li>
+          <a routerLink="/dashboard/events" routerLinkActive="bg-orange-600" class="block px-4 py-2 hover:bg-orange-600 transition-colors">Events</a>
+        </li>
+        <li>
+          <a routerLink="/dashboard/athletes" routerLinkActive="bg-orange-600" class="block px-4 py-2 hover:bg-orange-600 transition-colors">Athletes</a>
+        </li>
+        <li>
+          <a routerLink="/dashboard/coaches" routerLinkActive="bg-orange-600" class="block px-4 py-2 hover:bg-orange-600 transition-colors">Coaches</a>
+        </li>
+        <li>
+          <a routerLink="/dashboard/results" routerLinkActive="bg-orange-600" class="block px-4 py-2 hover:bg-orange-600 transition-colors">Results</a>
+        </li>
+        @if (userRole === 'ADMIN') {
+          <li>
+            <a routerLink="/dashboard/event-requests" routerLinkActive="bg-orange-600" class="block px-4 py-2 hover:bg-orange-600 transition-colors">Event Requests</a>
+          </li>
+          <li>
+            <a routerLink="/dashboard/publish-results" routerLinkActive="bg-orange-600" class="block px-4 py-2 hover:bg-orange-600 transition-colors">Publish Results</a>
+          </li>
+        }
+        @if (userRole === 'COACH') {
+          <li>
+            <a routerLink="/dashboard/requests" routerLinkActive="bg-orange-600" class="block px-4 py-2 hover:bg-orange-600 transition-colors">Coaching Requests</a>
+          </li>
+        }
+        @if (userRole === 'ATHLETE') {
+          <li>
+            <a routerLink="/dashboard/event-registration" routerLinkActive="bg-orange-600" class="block px-4 py-2 hover:bg-orange-600 transition-colors">Event Registration</a>
+          </li>
+        }
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="w-5/6 overflow-auto">
+    <router-outlet></router-outlet>
+  </main>
+</div>

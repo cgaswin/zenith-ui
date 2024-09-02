@@ -1,0 +1,29 @@
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { AthleteDTO } from '../dto/athlete.dto';
+import {  Observable } from 'rxjs';
+import { ResponseDTO } from '../dto/response.dto';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AthleteService {
+
+  private apiUrl = 'http://localhost:8082/api/v1/athlete';
+
+  constructor(private http: HttpClient) {}
+
+  getAllAthletes(): Observable<ResponseDTO<AthleteDTO[]>> {
+    return this.http.get<ResponseDTO<AthleteDTO[]>>(this.apiUrl);
+  }
+
+  getAthleteById(id: string): Observable<ResponseDTO<AthleteDTO>> {
+    return this.http.get<ResponseDTO<AthleteDTO>>(`${this.apiUrl}/${id}`);
+  }
+
+  updateAthlete(id: string, athleteData: Partial<AthleteDTO>): Observable<ResponseDTO<AthleteDTO>> {
+    return this.http.put<ResponseDTO<AthleteDTO>>(`${this.apiUrl}/${id}`, athleteData);
+  }
+
+
+}

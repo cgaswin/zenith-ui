@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { SignupFormData } from '../dto/signup.dto';
 import { ResponseDTO } from '../dto/response.dto';
 import { RegistrationResponseDTO } from '../dto/registrationResponse.dto';
 

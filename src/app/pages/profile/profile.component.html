@@ -1,0 +1,137 @@
+<div class="p-6">
+  <!-- Check if profile data is available -->
+  @if (profileData) {
+    <div class="flex flex-col items-center w-full ">
+      <!-- Profile Image and Basic Info -->
+      <div class="md:w-1/3 mb-6 md:mb-0 pr-6">
+        <div class="flex justify-center mb-6">
+          <img [src]="profileData.photoUrl || 'assets/default-avatar.png'"
+               [alt]="profileData.name"
+               class="rounded-full w-32 h-32 object-cover shadow-lg">
+        </div>
+        <h1 class="text-2xl font-bold mb-2 text-center">{{ profileData.name }}</h1>
+        <p class="text-gray-600 mb-4 text-center">{{ profileData.category }}</p>
+
+        <!-- Edit Profile Button -->
+        @if (isOwnProfile && !isEditing) {
+          <button (click)="startEdit()"
+                  class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+            Edit Profile
+          </button>
+        }
+
+        <!-- Toggle Accepting Requests Button -->
+        @if (isCoach(profileData) && isOwnProfile && !isEditing) {
+          <button (click)="toggleAcceptingRequests()"
+                  class="w-full mt-2 bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+            {{ profileData.acceptingRequests ? 'Stop' : 'Start' }} Accepting Requests
+          </button>
+        }
+
+        @if (isCoach(profileData) && isAthleteViewing && !isOwnProfile) {
+          <button (click)="requestAssistance()"
+                  class="w-full mt-2 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+              Request Assistance
+          </button>
+        }
+      </div>
+
+      <!-- Profile Details -->
+      <div class="md:w-2/3 mt-10 ">
+        <!-- Display Edit Form if in Editing Mode -->
+        @if (isEditing) {
+          <form (ngSubmit)="saveProfile()" #profileForm="ngForm">
+            <!-- Add your edit form fields here -->
+          </form>
+        } @else {
+          <!-- Display Profile Details -->
+          <div class="grid grid-cols-2 gap-4 mb-6 ml-40">
+            <div>
+              <p class="font-semibold">Gender:</p>
+              <p>{{ profileData.gender }}</p>
+            </div>
+            <div>
+              <p class="font-semibold">Date of Birth:</p>
+              <p>{{ profileData.dob }}</p>
+            </div>
+            @if (isAthlete(profileData)) {
+              <div>
+                <p class="font-semibold">Height:</p>
+                <p>{{ profileData.height }} cm</p>
+              </div>
+              <div>
+                <p class="font-semibold">Weight:</p>
+                <p>{{ profileData.weight }} kg</p>
+              </div>
+            }
+            @if (isCoach(profileData)) {
+              <div>
+                <p class="font-semibold">Accepting Requests:</p>
+                <p>{{ profileData.acceptingRequests ? 'Yes' : 'No' }}</p>
+              </div>
+            }
+          </div>
+
+          <!-- About Section -->
+          @if (profileData.description) {
+            <div class="mb-6">
+              <h2 class="text-xl font-semibold mb-2">About</h2>
+              <p>{{ profileData.description }}</p>
+            </div>
+          }
+
+          <!-- Achievements Section -->
+          @if (isCoach(profileData) && profileData.achievements.length > 0) {
+            <div class="mb-6">
+              <h2 class="text-xl font-semibold mb-2">Achievements</h2>
+              <ul class="list-disc list-inside">
+                <li *ngFor="let achievement of profileData.achievements; let i = index; trackBy: trackByIndex">
+                  {{ achievement }}
+                </li>
+              </ul>
+            </div>
+          }
+          <!-- Top Performance Section -->
+          @if (isAthlete(profileData)) {
+            <div class="mb-6">
+              <h2 class="text-xl font-semibold mb-2">Top Performance</h2>
+              <!-- Add top performance display here -->
+              <table class="w-full table-auto">
+                <thead>
+                  <tr class="bg-gray-200">
+                    <th class="px-4 py-2">Event</th>
+                    <th class="px-4 py-2">Date</th>
+                    <th class="px-4 py-2">Result</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Add performance rows here -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Performances Table -->
+            <div>
+              <h2 class="text-xl font-semibold mb-2">Performances</h2>
+              <table class="w-full table-auto">
+                <thead>
+                  <tr class="bg-gray-200">
+                    <th class="px-4 py-2">Event</th>
+                    <th class="px-4 py-2">Date</th>
+                    <th class="px-4 py-2">Result</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Add performance rows here -->
+                </tbody>
+              </table>
+            </div>
+          }
+        }
+      </div>
+    </div>
+  } @else {
+    <!-- Loading State -->
+    <p>Loading profile details...</p>
+  }
+</div>
