@@ -1,0 +1,33 @@
+<div class="container mx-auto px-4 py-8 bg-gray-50">
+  <h1 class="text-3xl font-bold mb-8 text-gray-800">Manage Event Items: {{ event?.name }}</h1>
+
+  <!-- Add New Item Form -->
+  <form (ngSubmit)="onSubmit()" #itemForm="ngForm" class="max-w-lg bg-white shadow-md rounded-lg p-6 mb-8">
+    <div class="mb-6">
+      <label for="name" class="block text-gray-700 text-sm font-semibold mb-2">Item Name</label>
+      <input type="text" id="name" name="name" [(ngModel)]="newItem.name" required
+             class="block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+    </div>
+    <div class="mb-6">
+      <label for="description" class="block text-gray-700 text-sm font-semibold mb-2">Description</label>
+      <textarea id="description" name="description" [(ngModel)]="newItem.description" required
+                class="block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
+    </div>
+    <button type="submit" [disabled]="!itemForm.form.valid"
+            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50">
+      Add Item
+    </button>
+  </form>
+
+  <!-- Existing Items List -->
+  <h2 class="text-2xl font-semibold mb-4 text-gray-800">Existing Items</h2>
+  <div class="bg-white shadow-md rounded-lg p-4">
+    <ul class="list-disc pl-5 space-y-2">
+      @for (item of eventItems; track item.id) {
+        <li class="text-gray-700">{{ item.name }} - {{ item.description }}</li>
+      } @empty {
+        <li class="text-gray-500">No items added yet.</li>
+      }
+    </ul>
+  </div>
+</div>

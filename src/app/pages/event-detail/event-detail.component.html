@@ -1,0 +1,64 @@
+<div class="container mx-auto px-4 py-8 bg-white rounded-lg shadow-lg max-w-3xl">
+  @if (event) {
+    <h1 class="text-3xl font-bold text-gray-900 mb-4">{{ event.name }}</h1>
+    <div class="mb-6">
+      <img [src]="event.photoUrl" [alt]="event.name" class="w-full max-w-sm h-auto rounded-lg shadow-md">
+    </div>
+    <p class="text-base text-gray-700 mb-4">{{ event.description }}</p>
+    <div class="text-gray-600 mb-4">
+      <p class="text-sm font-medium"><strong>Venue:</strong> {{ event.venue }}</p>
+      <p class="text-sm font-medium"><strong>Date:</strong> {{ event.date | date:'medium' }}</p>
+    </div>
+
+    <h2 class="text-2xl font-semibold text-gray-900 mb-4">Event Items</h2>
+    @if (eventItems.length > 0) {
+      <ul class="list-disc pl-5 space-y-4">
+        @for (item of eventItems; track item.id) {
+          <li class="flex justify-between items-center p-3 bg-white rounded-lg shadow-sm border border-gray-200">
+            <div class="flex-1">
+              <span class="text-base text-gray-800">{{ item.name }} - {{ item.description }}</span>
+            </div>
+            @if (isAthlete) {
+              @switch (getRegistrationStatus(item.id)) {
+                @case ('NOT_REGISTERED') {
+                  <button (click)="registerForEvent(item.id)"
+                          class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-1 px-3 rounded">
+                    Register
+                  </button>
+                }
+                @case ('PENDING') {
+                  <span class="text-yellow-600 font-semibold">Registration Pending</span>
+                }
+                @case ('APPROVED') {
+                  <span class="text-green-600 font-semibold">Registered</span>
+                }
+                @case ('REJECTED') {
+                  <span class="text-red-600 font-semibold">Registration Rejected</span>
+                }
+              }
+            }
+            @if (isAdmin) {
+              <a [routerLink]="['/dashboard', 'event-items', item.id, 'edit']"
+                 class="bg-green-500 hover:bg-green-700 text-white font-semibold py-1 px-3 rounded ml-4">
+                Edit Item
+              </a>
+            }
+          </li>
+        }
+      </ul>
+    } @else {
+      <p class="text-gray-600">No event items available.</p>
+    }
+
+    @if (isAdmin) {
+      <div class="mt-6 text-center">
+        <a [routerLink]="['/dashboard', 'events', event.id, 'items', 'create']"
+           class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded">
+          Add New Event Item
+        </a>
+      </div>
+    }
+  } @else {
+    <p class="text-gray-600">Loading event details...</p>
+  }
+</div>

@@ -19,4 +19,9 @@ export class DashboardLayoutComponent {
   ngOnInit() {
     this.userRole = this.authService.getUserRole();
   }
+
+  handleLogout(){
+    this.authService.logout();
+  }
+
 }

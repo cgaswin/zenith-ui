@@ -3,7 +3,7 @@
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
     @for (athlete of athletes; track athlete.id) {
       <div class="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300"
-           [routerLink]="['/profile', athlete.id]">
+      (click)="onAthleteClick(athlete.id)">
         <img [src]="athlete.photoUrl || 'assets/default-avatar.png'"
              [alt]="athlete.name"
              class="w-full h-48 object-cover">

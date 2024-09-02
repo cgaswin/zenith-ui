@@ -1,1 +1,42 @@
-<p>event-registration works!</p>
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold mb-6">Event Registrations</h1>
+  @if (registrations.length > 0) {
+    <table class="min-w-full bg-white">
+      <thead>
+        <tr>
+          <th class="py-2 px-4 border-b">Event</th>
+          <th class="py-2 px-4 border-b">Event Item</th>
+          <th class="py-2 px-4 border-b">Athlete</th>
+          <th class="py-2 px-4 border-b">Status</th>
+          <th class="py-2 px-4 border-b">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (reg of registrations; track reg.id) {
+          <tr>
+            <td class="py-2 px-4 border-b">{{ reg.event.name }}</td>
+            <td class="py-2 px-4 border-b">{{ reg.eventItem.name }}</td>
+            <td class="py-2 px-4 border-b">{{ reg.athleteName }}</td>
+            <td class="py-2 px-4 border-b">{{ reg.status }}</td>
+            <td class="py-2 px-4 border-b">
+              @if (reg.status === 'PENDING') {
+                <button (click)="updateRegistrationStatus(reg.id, 'APPROVED')"
+                        class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded mr-2">
+                  Approve
+                </button>
+                <button (click)="updateRegistrationStatus(reg.id, 'REJECTED')"
+                        class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">
+                  Reject
+                </button>
+              } @else {
+                {{ reg.status }}
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  } @else {
+    <p>No registrations found.</p>
+  }
+</div>

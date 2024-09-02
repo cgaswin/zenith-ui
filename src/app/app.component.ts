@@ -16,6 +16,9 @@ import { RequestsComponent } from './pages/requests/requests.component';
 import { PublicLayoutComponent } from './layout/public-layout/public-layout.component';
 import { EventRegistrationComponent } from './pages/event-registration/event-registration.component';
 import { EventRequestsComponent } from './pages/event-requests/event-requests.component';
+import { EventItemCreationComponent } from './pages/event-item-creation/event-item-creation.component';
+import { EventCreateComponent } from './pages/event-create/event-create.component';
+import { NewsComponent } from './pages/news/news.component';
 
 @Component({
   selector: 'app-root',
@@ -37,7 +40,10 @@ import { EventRequestsComponent } from './pages/event-requests/event-requests.co
     PublishResultsComponent,
     RequestsComponent,
     EventRegistrationComponent,
-    EventRequestsComponent
+    EventRequestsComponent,
+    EventItemCreationComponent,
+    EventCreateComponent,
+    NewsComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',

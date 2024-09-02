@@ -1,1 +1,50 @@
-<p>event-requests works!</p>
+<div class="container mx-auto px-4 py-8 bg-gray-50">
+  <h1 class="text-3xl font-bold mb-6 text-gray-800">Pending Registration Requests</h1>
+
+  <!-- Error Message -->
+  @if (errorMessage) {
+    <div class="bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded-lg mb-6 shadow-md">
+      <strong class="font-semibold">Error:</strong>
+      <span class="block sm:inline">{{ errorMessage }}</span>
+    </div>
+  }
+
+  <!-- Registration Table -->
+  @if (pendingRegistrations.length > 0) {
+    <div class="overflow-x-auto bg-white shadow-md rounded-lg">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Event</th>
+            <th class="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Event Item</th>
+            <th class="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Athlete</th>
+            <th class="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Registration Date</th>
+            <th class="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          @for (registration of pendingRegistrations; track registration.id) {
+            <tr>
+              <td class="py-4 px-6 text-sm text-gray-600">{{ registration.eventId }}</td>
+              <td class="py-4 px-6 text-sm text-gray-600">{{ registration.eventItemId }}</td>
+              <td class="py-4 px-6 text-sm text-gray-600">{{ registration.athleteId }}</td>
+              <td class="py-4 px-6 text-sm text-gray-600">{{ registration.registrationDate | date: 'medium' }}</td>
+              <td class="py-4 px-6 text-sm text-gray-600">
+                <button (click)="updateRegistrationStatus(registration.id, 'APPROVED')"
+                        class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50">
+                  Approve
+                </button>
+                <button (click)="updateRegistrationStatus(registration.id, 'REJECTED')"
+                        class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-50 ml-2">
+                  Reject
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else {
+    <p class="text-gray-600">No pending registration requests.</p>
+  }
+</div>

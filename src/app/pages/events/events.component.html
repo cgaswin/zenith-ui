@@ -1,1 +1,41 @@
-<p>events works!</p>
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold mb-6">Events</h1>
+
+  @if (isAdmin) {
+    <a routerLink="/dashboard/events/create" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mb-4 inline-block">
+      Create New Event
+    </a>
+  }
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    @for (event of events; track event.id) {
+      <div class="bg-white rounded-lg shadow-md overflow-hidden flex flex-col max-w-full">
+        <img [src]="event.photoUrl" [alt]="event.name" class="w-full h-32 object-cover bg-gray-200">
+        <div class="p-3 flex-1">
+          <h2 class="text-lg font-semibold mb-1">{{ event.name }}</h2>
+          <p class="text-gray-600 text-sm mb-1">{{ event.venue }}</p>
+          <p class="text-gray-600 text-sm mb-2">{{ event.date | date: 'dd/MM/yyyy' }}</p>
+        </div>
+        <div class="p-3 bg-gray-50 flex justify-center">
+          @if (isLoggedIn && isAdmin) {
+            <a [routerLink]="['/dashboard/events', event.id, 'items']" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">
+              Manage Items
+            </a>
+          }
+          @else if(isLoggedIn) {
+            <a [routerLink]="['/dashboard/events', event.id]" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">
+              View Details
+            </a>
+          }
+           @else {
+            <a [routerLink]="['/events', event.id]" class="bg-orange-500 text-white px-3 py-1 rounded hover:bg-blue-600">
+              View Details
+            </a>
+          }
+        </div>
+      </div>
+    } @empty {
+      <p>No events found.</p>
+    }
+  </div>
+</div>

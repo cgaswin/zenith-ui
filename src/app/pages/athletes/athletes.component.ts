@@ -14,7 +14,7 @@ import { AuthService } from '../../service/auth.service';
 export class AthletesComponent {
   athletes: AthleteDTO[] = [];
 
-  constructor(private athleteService: AthleteService) {}
+  constructor(private athleteService: AthleteService, private authService:AuthService,private router:Router) {}
 
   ngOnInit() {
     this.loadAthletes();
@@ -31,5 +31,13 @@ export class AthletesComponent {
       },
       error: (error) => console.error('Error fetching athletes:', error)
     });
+  }
+
+  onAthleteClick(athleteId: string) {
+    if (this.authService.isLoggedIn()) {
+      this.router.navigate(['/dashboard/profile', athleteId]);
+    } else {
+      this.router.navigate(['/profile', athleteId]);
+    }
   }
 }

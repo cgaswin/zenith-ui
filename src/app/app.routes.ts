@@ -18,6 +18,10 @@ import { PublishResultsComponent } from './pages/publish-results/publish-results
 import { PublicLayoutComponent } from './layout/public-layout/public-layout.component';
 import { EventRegistrationComponent } from './pages/event-registration/event-registration.component';
 import { EventRequestsComponent } from './pages/event-requests/event-requests.component';
+import { EventCreateComponent } from './pages/event-create/event-create.component';
+import { EventItemCreationComponent } from './pages/event-item-creation/event-item-creation.component';
+import { EventDetailComponent } from './pages/event-detail/event-detail.component';
+import { NewsComponent } from './pages/news/news.component';
 
 
 export const routes: Routes = [
@@ -27,11 +31,13 @@ export const routes: Routes = [
     children: [
       { path: '', component: HomeComponent },
       { path: 'events', component: EventsComponent },
+      {path: 'events/:id',component: EventDetailComponent},
       { path: 'athletes', component: AthletesComponent },
       { path: 'coaches', component: CoachesComponent },
       { path: 'results', component: ResultsComponent },
       { path: 'login', component: LoginComponent },
       { path: 'signup', component: SignupComponent },
+      { path: 'news', component: NewsComponent },
       { path: 'profile/:id', component: ProfileComponent },
     ]
   },
@@ -64,18 +70,35 @@ export const routes: Routes = [
           },
         ]
       },
+      {
+        path: 'events',
+        component: EventsComponent
+      },
+      {
+        path: 'events/create',
+        component: EventCreateComponent,
+        canActivate: [roleGuard],
+        data: { role: 'ADMIN' }
+      },
+      {
+        path: 'events/:id/items',
+        component: EventItemCreationComponent,
+        canActivate: [roleGuard],
+        data: { role: 'ADMIN' }
+      },
       { path: 'profile', component: ProfileComponent },
       { path: 'profile/:id', component: ProfileComponent },
       { path: 'events', component: EventsComponent },
+      {path: 'events/:id',component: EventDetailComponent},
       { path: 'athletes', component: AthletesComponent },
       { path: 'coaches', component: CoachesComponent },
       { path: 'results', component: ResultsComponent },
-      {
-        path: 'event-registration',
-        component: EventRegistrationComponent,
-        canActivate: [roleGuard],
-        data: { role: 'ATHLETE' }
-      },
+      // {
+      //   path: 'event-registration',
+      //   component: EventRegistrationComponent,
+      //   canActivate: [roleGuard],
+      //   data: { role: 'ADMIN' }
+      // },
       {
         path: 'requests',
         component: RequestsComponent,
@@ -83,7 +106,7 @@ export const routes: Routes = [
         data: { role: 'COACH' }
       },
       {
-        path: 'event-requests',
+        path: 'registration-requests',
         component: EventRequestsComponent,
         canActivate: [roleGuard],
         data: { role: 'ADMIN' }

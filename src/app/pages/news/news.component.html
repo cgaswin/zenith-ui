@@ -1,0 +1,25 @@
+<div class="p-6">
+  <h1 class="text-3xl font-bold mb-6">Latest Sports News</h1>
+
+  <div *ngIf="articles.length === 0" class="text-center">
+    <p class="text-gray-500">No news available at the moment.</p>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <div *ngFor="let article of articles.slice(0, 12)" class="bg-white shadow-md rounded-lg overflow-hidden flex flex-col">
+      <div class="p-4 flex-1">
+        <h2 class="text-lg font-semibold mb-2">
+          <a [href]="article.url" target="_blank" class="hover:underline text-blue-600">{{ article.title }}</a>
+        </h2>
+        <p class="text-sm text-gray-600 mb-4">
+          {{ article.author ? article.author : 'Unknown Author' }} - {{ article.publishedAt | date: 'medium' }}
+        </p>
+      </div>
+      <div class="p-4 bg-gray-50 flex justify-center">
+        <a [href]="article.url" target="_blank" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+          See More
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

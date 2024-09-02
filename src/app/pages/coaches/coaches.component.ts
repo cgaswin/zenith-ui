@@ -1,19 +1,21 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CoachDTO } from '../../dto/coach.dto';
 import { CoachService } from '../../service/coach.service';
+import { AuthService } from '../../service/auth.service';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-coaches',
   standalone: true,
-  imports: [RouterModule],
+  imports: [RouterModule,NgClass],
   templateUrl: './coaches.component.html',
   styleUrl: './coaches.component.css'
 })
 export class CoachesComponent {
   coaches: CoachDTO[] = [];
 
-  constructor(private coachService: CoachService) {}
+  constructor(private coachService: CoachService,private authService:AuthService,private router:Router) {}
 
   ngOnInit() {
     this.loadCoaches();
@@ -32,4 +34,13 @@ export class CoachesComponent {
       error: (error) => console.error('Error fetching coaches:', error)
     });
   }
+
+  onCoachClick(coachId: string) {
+    if (this.authService.isLoggedIn()) {
+      this.router.navigate(['/dashboard/profile', coachId]);
+    } else {
+      this.router.navigate(['/profile', coachId]);
+    }
+  }
+  
 }

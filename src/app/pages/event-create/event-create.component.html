@@ -1,0 +1,46 @@
+<div class="container mx-auto px-4 py-8 bg-gray-100">
+  <h1 class="text-3xl font-bold mb-8 text-gray-800">Create New Event</h1>
+  <form (ngSubmit)="onSubmit()" #eventForm="ngForm" class="max-w-lg mx-auto bg-white shadow-lg rounded-lg p-6">
+
+    <!-- Event Name -->
+    <div class="mb-6">
+      <label for="name" class="block text-gray-700 text-sm font-semibold mb-2">Event Name</label>
+      <input type="text" id="name" name="name" [(ngModel)]="eventData.name" required
+             class="block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+    </div>
+
+    <!-- Description -->
+    <div class="mb-6">
+      <label for="description" class="block text-gray-700 text-sm font-semibold mb-2">Description</label>
+      <textarea id="description" name="description" [(ngModel)]="eventData.description" required
+                class="block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
+    </div>
+
+    <!-- Venue -->
+    <div class="mb-6">
+      <label for="venue" class="block text-gray-700 text-sm font-semibold mb-2">Venue</label>
+      <input type="text" id="venue" name="venue" [(ngModel)]="eventData.venue" required
+             class="block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+    </div>
+
+    <!-- Date and Time -->
+    <div class="mb-6">
+      <label for="date" class="block text-gray-700 text-sm font-semibold mb-2">Date and Time</label>
+      <input type="datetime-local" id="date" name="date" [(ngModel)]="eventData.date" required
+             class="block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+    </div>
+
+    <!-- Event Image -->
+    <div class="mb-6">
+      <label for="image" class="block text-gray-700 text-sm font-semibold mb-2">Event Image</label>
+      <input type="file" id="image" name="image" (change)="onFileSelected($event)" accept="image/*" required
+             class="block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+    </div>
+
+    <!-- Submit Button -->
+    <button type="submit" [disabled]="!eventForm.form.valid"
+            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50">
+      Create Event
+    </button>
+  </form>
+</div>
