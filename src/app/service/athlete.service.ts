@@ -3,6 +3,8 @@ import { Injectable } from '@angular/core';
 import { AthleteDTO } from '../dto/athlete.dto';
 import {  Observable } from 'rxjs';
 import { ResponseDTO } from '../dto/response.dto';
+import { CoachingStatusDTO } from '../dto/coachingStatus.dto';
+import { CoachingRequestResponseDTO } from '../dto/coachingRequestResponse.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -29,4 +31,8 @@ export class AthleteService {
     return this.http.get<ResponseDTO<any>>(`${this.apiUrl}/stats`);
   }
 
+
+  getCoachingStatus(athleteId: string): Observable<ResponseDTO<CoachingRequestResponseDTO | null>> {
+    return this.http.get<ResponseDTO<CoachingRequestResponseDTO | null>>(`${this.apiUrl}/${athleteId}/coaching-status`);
+  }
 }

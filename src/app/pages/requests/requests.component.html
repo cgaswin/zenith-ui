@@ -1,44 +1,35 @@
-<!-- requests.component.html -->
-<div class="p-6 bg-gray-50">
-  <h1 class="text-3xl font-bold mb-6 text-gray-800">Coaching Requests</h1>
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold mb-6">Coaching Requests</h1>
 
-  <!-- Show requests if available -->
-  <div *ngIf="requests; else noRequests">
-    <div class="overflow-x-auto bg-white shadow-md rounded-lg">
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-100 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-          <tr>
-            <th class="px-6 py-3">Request ID</th>
-            <th class="px-6 py-3">Request Date</th>
-            <th class="px-6 py-3">Status</th>
-            <th class="px-6 py-3">Actions</th>
-          </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-          <tr *ngFor="let request of requests">
-            <td class="px-6 py-4 text-sm text-gray-800">{{ request.id }}</td>
-            <td class="px-6 py-4 text-sm text-gray-600">{{ request.requestDate | date:'short' }}</td>
-            <td class="px-6 py-4 text-sm text-gray-600">{{ request.status }}</td>
-            <td class="px-6 py-4 text-sm">
+  @if (error) {
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+      <span class="block sm:inline">{{ error }}</span>
+    </div>
+  }
+
+  @if (requests && requests.length > 0) {
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      @for (request of requests; track request.id) {
+        <div class="bg-white shadow-md rounded-lg p-6">
+          <h2 class="text-xl font-semibold mb-2">Request from {{ request.athlete.name }}</h2>
+          <p class="text-gray-600 mb-2">Date: {{ request.requestDate | date:'medium' }}</p>
+          <p class="text-gray-600 mb-4">Status: {{ request.status }}</p>
+          @if (request.status === 'PENDING') {
+            <div class="flex justify-between">
               <button (click)="updateStatus(request.id, 'APPROVED')"
-                      class="bg-green-500 hover:bg-green-600 text-white font-semibold py-1 px-3 rounded focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50 transition">
-                Accept
+                      class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
+                Approve
               </button>
               <button (click)="updateStatus(request.id, 'REJECTED')"
-                      class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-3 rounded ml-2 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-50 transition">
+                      class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">
                 Reject
               </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            </div>
+          }
+        </div>
+      }
     </div>
-  </div>
-
-  <!-- Template for no requests -->
-  <ng-template #noRequests>
-    <div class="bg-white p-6 rounded-lg shadow-md text-center">
-      <p class="text-gray-600">No coaching requests found.</p>
-    </div>
-  </ng-template>
+  } @else {
+    <p class="text-gray-600">No coaching requests found.</p>
+  }
 </div>

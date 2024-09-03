@@ -119,24 +119,34 @@ export class SignupComponent {
         const formData = new FormData();
 
         // Handle common fields
-        (Object.keys(validatedData) as Array<keyof SignupFormData>).forEach(key => {
-          if (key === 'image') {
-            if (file instanceof File) {
-              formData.append(key, file, file.name);
-            }
-          } else if (validatedData[key] !== null && validatedData[key] !== undefined) {
+        const commonFields: (keyof SignupFormData)[] = [
+          'name', 'username', 'email', 'password', 'confirmPassword',
+          'gender', 'dob', 'role', 'category', 'description'
+        ];
+
+        commonFields.forEach(key => {
+          if (validatedData[key] !== null && validatedData[key] !== undefined) {
             formData.append(key, validatedData[key]!.toString());
           }
         });
+
+        // Handle image
+        if (file instanceof File) {
+          formData.append('image', file, file.name);
+        }
 
         // Handle role-specific fields
         if (this.isCoachData(validatedData)) {
           validatedData.achievements.forEach((achievement, index) => {
             formData.append(`achievements[${index}]`, achievement);
           });
-        } else {
-          formData.append('height', validatedData.height.toString());
-          formData.append('weight', validatedData.weight.toString());
+        } else if (this.isAthleteData(validatedData)) {
+          if (validatedData.height !== null) {
+            formData.append('height', validatedData.height.toString());
+          }
+          if (validatedData.weight !== null) {
+            formData.append('weight', validatedData.weight.toString());
+          }
         }
 
         this.signupService.signup(formData).subscribe({
@@ -151,10 +161,9 @@ export class SignupComponent {
             }
           },
           error: (error: HttpErrorResponse) => {
-              console.error('Error object:', error);
-              this.errorMessage = this.getErrorMessage(error);
-              this.isSubmitting = false;
-
+            console.error('Error object:', error);
+            this.errorMessage = this.getErrorMessage(error);
+            this.isSubmitting = false;
           },
           complete: () => {
             this.isSubmitting = false;
@@ -176,6 +185,12 @@ export class SignupComponent {
   private isCoachData(data: SignupFormData): data is CoachData {
     return (data as CoachData).achievements !== undefined;
   }
+
+  private isAthleteData(data: SignupFormData): data is AthleteData {
+    return (data as AthleteData).height !== undefined && (data as AthleteData).weight !== undefined;
+  }
+
+ 
 
   private getErrorMessage(error: HttpErrorResponse): string {
     if (error.error instanceof ErrorEvent) {

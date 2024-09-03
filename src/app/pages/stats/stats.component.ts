@@ -3,7 +3,7 @@ import { EventService } from '../../service/event.service';
 import { AthleteService } from '../../service/athlete.service';
 import { CoachService } from '../../service/coach.service';
 import { forkJoin } from 'rxjs';
-import { Chart, ChartConfiguration } from 'chart.js/auto';
+import { Chart } from 'chart.js/auto';
 
 
 interface StatsData {

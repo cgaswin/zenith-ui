@@ -8,7 +8,7 @@ import { environment } from '../../environments/environment';
 })
 export class NewsService {
 
-  private apiUrl = `https://newsapi.org/v2/top-headlines?country=in&category=sports&apiKey=${environment.NEWS_API_KEY}`;
+  private apiUrl = `https://newsapi.org/v2/top-headlines?country=in&category=sports&apiKey=6fd2dc5a819c44bf892a775cdf0d5ce6`;
 
   constructor(private http: HttpClient) { }
 

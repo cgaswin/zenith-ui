@@ -1,16 +1,19 @@
-
 import { z } from 'zod';
 
-// Define the schema
 export const CoachingRequestResponseSchema = z.object({
-  id: z.string(), // Adjust type if needed, e.g., z.string().uuid() for UUIDs
-  requestDate: z.string().refine(date => !isNaN(Date.parse(date)), {
-    message: 'Invalid date format'
+  id: z.string(),
+  athlete: z.object({
+    id: z.string(),
+    name: z.string(),
+    // Add other athlete properties as needed
   }),
-  status: z.enum(['PENDING', 'APPROVED', 'REJECTED']), // Update according to the valid statuses
-  coachId: z.string(),
-  athleteId: z.string(),
+  coach: z.object({
+    id: z.string(),
+    name: z.string(),
+    // Add other coach properties as needed
+  }),
+  status: z.enum(['PENDING', 'APPROVED', 'REJECTED']),
+  requestDate: z.string().optional() // Make requestDate optional
 });
 
-// Create TypeScript type from the schema
 export type CoachingRequestResponseDTO = z.infer<typeof CoachingRequestResponseSchema>;

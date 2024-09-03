@@ -56,19 +56,19 @@ export const routes: Routes = [
         canActivate: [roleGuard],
         children: [
           {
-            path: 'admin',
+            path: '',
             component: AdminDashboardComponent,
             canActivate: [roleGuard],
             data: { role: 'ADMIN' }
           },
           {
-            path: 'coach',
+            path: '',
             component: CoachDashboardComponent,
             canActivate: [roleGuard],
             data: { role: 'COACH' }
           },
           {
-            path: 'athlete',
+            path: '',
             component: AthleteDashboardComponent,
             canActivate: [roleGuard],
             data: { role: 'ATHLETE' }

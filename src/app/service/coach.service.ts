@@ -4,6 +4,7 @@ import { map, Observable } from 'rxjs';
 import { ResponseDTO } from '../dto/response.dto';
 import { CoachDTO } from '../dto/coach.dto';
 import { CoachingRequestResponseDTO } from '../dto/coachingRequestResponse.dto';
+import { CoachingRequestRequestDTO } from '../dto/coachRequest.dto';
 
 
 
@@ -12,6 +13,7 @@ import { CoachingRequestResponseDTO } from '../dto/coachingRequestResponse.dto';
 })
 export class CoachService {
   private apiUrl = 'http://localhost:8091/user-service/api/v1/coach';
+  private requestUrl = 'http://localhost:8091/user-service/api/v1/request';
 
   constructor(private http: HttpClient) {}
 
@@ -24,7 +26,7 @@ export class CoachService {
   }
 
   updateCoach(id: string, coachData: Partial<CoachDTO>): Observable<ResponseDTO<CoachDTO>> {
-    console.log(coachData)
+    console.log(coachData);
     return this.http.put<ResponseDTO<CoachDTO>>(`${this.apiUrl}/${id}`, coachData);
   }
 
@@ -33,11 +35,11 @@ export class CoachService {
   }
 
   getCoachingRequestsByCoachId(id: string): Observable<ResponseDTO<CoachingRequestResponseDTO[]>> {
-    return this.http.get<ResponseDTO<CoachingRequestResponseDTO[]>>(`${this.apiUrl}/${id}/coaching-requests`);
+    return this.http.get<ResponseDTO<CoachingRequestResponseDTO[]>>(`${this.requestUrl}/coach/${id}`);
   }
 
   updateCoachingRequestStatus(id: string, status: string): Observable<ResponseDTO<void>> {
-    return this.http.put<ResponseDTO<void>>(`${this.apiUrl}/${id}/status`, {}, {
+    return this.http.put<ResponseDTO<void>>(`${this.requestUrl}/${id}/status`, {}, {
       params: { status: status }
     });
   }
@@ -46,4 +48,7 @@ export class CoachService {
     return this.http.get<ResponseDTO<any>>(`${this.apiUrl}/stats`);
   }
 
+  createCoachingRequest(requestData: CoachingRequestRequestDTO): Observable<ResponseDTO<CoachingRequestResponseDTO>> {
+    return this.http.post<ResponseDTO<CoachingRequestResponseDTO>>(`${this.requestUrl}`, requestData);
+  }
 }

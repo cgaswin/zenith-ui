@@ -10,7 +10,7 @@ import { z } from 'zod';
 })
 export class EventService {
 
-  private apiUrl = 'http://localhost:8081/api/v1';
+  private apiUrl = 'http://localhost:8091/event-service/api/v1';
 
   constructor(private http: HttpClient) {}
 
@@ -35,7 +35,7 @@ export class EventService {
   }
 
   getEventItems(eventId: string): Observable<ResponseDTO<EventItemDTO[]>> {
-    return this.http.get<ResponseDTO<EventItemDTO[]>>(`${this.apiUrl}/eventItem?eventId=${eventId}`).pipe(
+    return this.http.get<ResponseDTO<EventItemDTO[]>>(`${this.apiUrl}/eventItem/event/${eventId}`).pipe(
       map(response => ({
         ...response,
         data: z.array(EventItemDTO).parse(response.data)
@@ -111,6 +111,7 @@ export class EventService {
 
   updateRegistrationStatus(registrationId: string, status: 'APPROVED' | 'REJECTED'): Observable<ResponseDTO<EventRegistrationDTO>> {
     const url = `${this.apiUrl}/registration/${registrationId}/status?status=${status}`;
+    console.log(url,registrationId,status)
     return this.http.patch<ResponseDTO<EventRegistrationDTO>>(url, {}, { headers: this.getHeaders() }).pipe(
       map(response => ({
         ...response,

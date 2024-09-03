@@ -50,6 +50,7 @@ export class PublishResultsComponent {
     this.eventService.getEventItems(eventId).subscribe(response => {
       if (response.success) {
         this.eventItems = response.data;
+        console.log(response.data)
       }
     });
   }

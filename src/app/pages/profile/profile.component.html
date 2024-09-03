@@ -1,44 +1,41 @@
 <div class="container mx-auto px-4 py-8">
-  <!-- Check if profile data is available -->
   @if (profileData) {
     <div class="flex flex-col md:flex-row items-center md:items-start w-full space-y-6 md:space-y-0 md:space-x-6">
       <!-- Profile Image and Basic Info -->
-      <div class="flex flex-col items-center md:items-start md:w-1/3">
+      <div class="flex flex-col items-center md:items-start md:w-1/3 text-center md:text-left">
         <div class="mb-6">
           <img [src]="profileData.photoUrl || 'assets/default-avatar.png'"
                [alt]="profileData.name"
-               class="rounded-full w-32 h-32 object-cover shadow-xl">
+               class="rounded-full w-36 h-36 object-cover shadow-md">
         </div>
-        <h1 class="text-3xl font-bold text-gray-800 mb-2 text-center md:text-left">{{ profileData.name }}</h1>
-        <p class="text-gray-600 text-lg mb-4 text-center md:text-left">{{ profileData.category }}</p>
+        <h1 class="text-4xl font-extrabold text-gray-800 mb-2">{{ profileData.name }}</h1>
+        <p class="text-gray-600 text-xl mb-4">{{ profileData.category }}</p>
 
-        <!-- Edit Profile Button -->
         @if (isOwnProfile && !isEditing) {
           <button (click)="startEdit()"
-                  class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-2">
+                  class="w-full bg-blue-600 hover:bg-blue-800 text-white font-semibold py-2 px-4 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2">
             Edit Profile
           </button>
         }
 
-        <!-- Toggle Accepting Requests Button -->
         @if (isCoach(profileData) && isOwnProfile && !isEditing) {
           <button (click)="toggleAcceptingRequests()"
-                  class="w-full bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-2">
+                  class="w-full bg-yellow-600 hover:bg-yellow-800 text-white font-semibold py-2 px-4 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-500 mb-2">
             {{ profileData.acceptingRequests ? 'Stop' : 'Start' }} Accepting Requests
           </button>
         }
 
-        @if (isCoach(profileData) && isAthleteViewing && !isOwnProfile) {
+        @if (isCoach(profileData) && isAthleteViewing && !isOwnProfile && profileData.acceptingRequests) {
           <button (click)="requestAssistance()"
-                  class="w-full bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-            Request Assistance
+                  class="w-full bg-green-600 hover:bg-green-800 text-white font-semibold py-2 px-4 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                  [disabled]="coachingStatus?.status === 'PENDING'">
+            {{ coachingStatus?.status === 'PENDING' ? 'Request Pending' : 'Request Assistance' }}
           </button>
         }
       </div>
 
       <!-- Profile Details -->
       <div class="md:w-2/3">
-        <!-- Display Edit Form if in Editing Mode -->
         @if (isEditing) {
           <app-update-profile-modal
             [profile]="profileData!"
@@ -46,47 +43,61 @@
             (cancel)="cancelEdit()">
           </app-update-profile-modal>
         } @else {
-          <!-- Display Profile Details -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
               <p class="font-semibold text-gray-700">Gender:</p>
-              <p>{{ profileData.gender }}</p>
+              <p class="text-gray-800">{{ profileData.gender }}</p>
             </div>
             <div>
               <p class="font-semibold text-gray-700">Date of Birth:</p>
-              <p>{{ profileData.dob }}</p>
+              <p class="text-gray-800">{{ profileData.dob }}</p>
             </div>
             @if (isAthlete(profileData)) {
               <div>
                 <p class="font-semibold text-gray-700">Height:</p>
-                <p>{{ profileData.height }} cm</p>
+                <p class="text-gray-800">{{ profileData.height }} cm</p>
               </div>
               <div>
                 <p class="font-semibold text-gray-700">Weight:</p>
-                <p>{{ profileData.weight }} kg</p>
+                <p class="text-gray-800">{{ profileData.weight }} kg</p>
               </div>
             }
             @if (isCoach(profileData)) {
               <div>
                 <p class="font-semibold text-gray-700">Accepting Requests:</p>
-                <p>{{ profileData.acceptingRequests ? 'Yes' : 'No' }}</p>
+                <p class="text-gray-800">{{ profileData.acceptingRequests ? 'Yes' : 'No' }}</p>
               </div>
             }
           </div>
 
-          <!-- About Section -->
-          @if (profileData.description) {
+          @if (isAthlete(profileData) && coachingStatus) {
             <div class="mb-6">
-              <h2 class="text-2xl font-semibold text-gray-800 mb-2">About</h2>
-              <p class="text-gray-700">{{ profileData.description }}</p>
+              <h2 class="text-2xl font-semibold text-gray-800 mb-2">Coaching Status</h2>
+              @if (hasCoach) {
+                <p class="text-gray-700">coach: {{ coachingStatus.coach.name }}</p>
+                <a [routerLink]="['/profile', coachingStatus.coach.id]" class="text-blue-600 hover:underline">View Coach Profile</a>
+              } @else if (hasPendingRequest) {
+                <p class="text-yellow-600">Your coaching request is pending.</p>
+                @if (coachingStatus.requestDate) {
+                  <p class="text-gray-600">Request Date: {{ coachingStatus.requestDate | date:'medium' }}</p>
+                }
+              } @else {
+                <p class="text-gray-600">You don't have a coach yet. Browse coaches to send a request.</p>
+              }
             </div>
           }
 
-          <!-- Achievements Section -->
+          @if (profileData.description) {
+            <div class="mb-6">
+              <h2 class="text-3xl font-semibold text-gray-800 mb-2">About</h2>
+              <p class="text-gray-700 leading-relaxed">{{ profileData.description }}</p>
+            </div>
+          }
+
           @if (isCoach(profileData) && profileData.achievements.length > 0) {
             <div class="mb-6">
-              <h2 class="text-2xl font-semibold text-gray-800 mb-2">Achievements</h2>
-              <ul class="list-disc list-inside text-gray-700">
+              <h2 class="text-3xl font-semibold text-gray-800 mb-2">Achievements</h2>
+              <ul class="list-disc list-inside text-gray-700 space-y-1">
                 @for (achievement of profileData.achievements; track $index) {
                   <li>{{ achievement }}</li>
                 }
@@ -94,11 +105,10 @@
             </div>
           }
 
-          <!-- Top Performance Section -->
           @if (isAthlete(profileData) && topPerformance) {
             <div class="mb-6">
-              <h2 class="text-2xl font-semibold text-gray-800 mb-2">Top Performance</h2>
-              <div class="bg-white shadow overflow-hidden sm:rounded-lg p-4">
+              <h2 class="text-3xl font-semibold text-gray-800 mb-2">Top Performance</h2>
+              <div class="bg-white shadow-md rounded-lg p-6">
                 <p><strong>Event:</strong> {{ topPerformance.eventName }}</p>
                 <p><strong>Event Item:</strong> {{ topPerformance.eventItemName }}</p>
                 <p><strong>Score:</strong> {{ topPerformance.score }}</p>
@@ -107,26 +117,25 @@
             </div>
           }
 
-          <!-- Performances Table -->
           @if (isAthlete(profileData) && performances.length > 0) {
             <div>
-              <h2 class="text-2xl font-semibold text-gray-800 mb-2">Performances</h2>
-              <table class="w-full table-auto border-collapse border border-gray-200">
+              <h2 class="text-3xl font-semibold text-gray-800 mb-2">Performances</h2>
+              <table class="w-full border-collapse border border-gray-300 bg-gray-50">
                 <thead>
-                  <tr class="bg-gray-100">
-                    <th class="px-4 py-2 border-b">Event</th>
-                    <th class="px-4 py-2 border-b">Event Item</th>
-                    <th class="px-4 py-2 border-b">Score</th>
-                    <th class="px-4 py-2 border-b">Date</th>
+                  <tr class="bg-gray-200">
+                    <th class="px-6 py-3 border-b text-left">Event</th>
+                    <th class="px-6 py-3 border-b text-left">Event Item</th>
+                    <th class="px-6 py-3 border-b text-left">Score</th>
+                    <th class="px-6 py-3 border-b text-left">Date</th>
                   </tr>
                 </thead>
                 <tbody>
                   @for (performance of performances; track performance.id) {
-                    <tr>
-                      <td class="px-4 py-2 border-b">{{ performance.eventName }}</td>
-                      <td class="px-4 py-2 border-b">{{ performance.eventItemName }}</td>
-                      <td class="px-4 py-2 border-b">{{ performance.score }}</td>
-                      <td class="px-4 py-2 border-b">{{ performance.publishedDate | date:'mediumDate' }}</td>
+                    <tr class="hover:bg-gray-100">
+                      <td class="px-6 py-4 border-b">{{ performance.eventName }}</td>
+                      <td class="px-6 py-4 border-b">{{ performance.eventItemName }}</td>
+                      <td class="px-6 py-4 border-b">{{ performance.score }}</td>
+                      <td class="px-6 py-4 border-b">{{ performance.publishedDate | date:'mediumDate' }}</td>
                     </tr>
                   }
                 </tbody>
@@ -137,7 +146,6 @@
       </div>
     </div>
   } @else {
-    <!-- Loading State -->
-    <p class="text-center text-gray-600">Loading profile details...</p>
+    <p class="text-center text-gray-600 text-xl">Loading profile details...</p>
   }
 </div>

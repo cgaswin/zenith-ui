@@ -19,7 +19,7 @@ export class NavbarComponent {
   }
 
   signupUser() {
-    this.router.navigate(['/register']);
+    this.router.navigate(['/signup']);
   }
 
   toggleMenu() {

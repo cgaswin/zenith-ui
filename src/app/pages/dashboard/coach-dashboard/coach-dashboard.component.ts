@@ -8,6 +8,8 @@ import { StatsComponent } from '../../stats/stats.component';
   templateUrl: './coach-dashboard.component.html',
   styleUrl: './coach-dashboard.component.css'
 })
-export class CoachDashboardComponent {
+export class CoachDashboardComponent  {
+
+  
 
 }
