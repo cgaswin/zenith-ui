@@ -39,6 +39,9 @@
         }
         @if (userRole === 'ATHLETE') {
           <li>
+            <a routerLink="/dashboard/my-events" routerLinkActive="bg-orange-700" class="block px-4 py-3 rounded-md hover:bg-orange-700 transition-colors">My Events</a>
+          </li>
+          <li>
             <a routerLink="/dashboard/profile" routerLinkActive="bg-orange-700" class="block px-4 py-3 rounded-md hover:bg-orange-700 transition-colors">Profile</a>
           </li>
         }

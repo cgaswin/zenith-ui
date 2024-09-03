@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { EventService } from '../../service/event.service';
 import { SlicePipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { AuthService } from '../../service/auth.service';
 
 @Component({
   selector: 'app-results',
@@ -13,7 +14,10 @@ import { RouterModule } from '@angular/router';
 export class ResultsComponent {
   events: any[] = [];
 
-  constructor(private eventService: EventService) {}
+  constructor(
+    private eventService: EventService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit() {
     this.loadEvents();
@@ -25,5 +29,10 @@ export class ResultsComponent {
         this.events = response.data;
       }
     });
+  }
+
+  getResultsRoute(eventId: string): string[] {
+    const baseRoute = this.authService.isLoggedIn() ? ['/dashboard', 'results', eventId] : ['/results', eventId];
+    return baseRoute;
   }
 }

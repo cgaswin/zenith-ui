@@ -7,6 +7,17 @@
     </a>
   }
 
+   <!-- Search input field -->
+   <div class="mb-6">
+    <input
+      type="text"
+      placeholder="Search by event name..."
+      [(ngModel)]="searchQuery"
+      (input)="onSearchChange()"
+      class="w-full px-3 py-2 border border-gray-300 rounded-lg"
+    />
+  </div>
+
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
     @for (event of events; track event.id) {
       <div class="bg-white rounded-lg shadow-md overflow-hidden flex flex-col max-w-full">

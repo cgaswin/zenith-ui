@@ -11,7 +11,7 @@ import { CoachingRequestResponseDTO } from '../dto/coachingRequestResponse.dto';
   providedIn: 'root'
 })
 export class CoachService {
-  private apiUrl = 'http://localhost:8082/api/v1/coach';
+  private apiUrl = 'http://localhost:8091/user-service/api/v1/coach';
 
   constructor(private http: HttpClient) {}
 
@@ -24,6 +24,7 @@ export class CoachService {
   }
 
   updateCoach(id: string, coachData: Partial<CoachDTO>): Observable<ResponseDTO<CoachDTO>> {
+    console.log(coachData)
     return this.http.put<ResponseDTO<CoachDTO>>(`${this.apiUrl}/${id}`, coachData);
   }
 
@@ -39,6 +40,10 @@ export class CoachService {
     return this.http.put<ResponseDTO<void>>(`${this.apiUrl}/${id}/status`, {}, {
       params: { status: status }
     });
+  }
+
+  getCoachStats(): Observable<ResponseDTO<any>> {
+    return this.http.get<ResponseDTO<any>>(`${this.apiUrl}/stats`);
   }
 
 }

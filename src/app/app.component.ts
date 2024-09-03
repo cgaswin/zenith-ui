@@ -19,6 +19,8 @@ import { EventRequestsComponent } from './pages/event-requests/event-requests.co
 import { EventItemCreationComponent } from './pages/event-item-creation/event-item-creation.component';
 import { EventCreateComponent } from './pages/event-create/event-create.component';
 import { NewsComponent } from './pages/news/news.component';
+import { StatsComponent } from './pages/stats/stats.component';
+import { EventResultsComponent } from './pages/event-results/event-results.component';
 
 @Component({
   selector: 'app-root',
@@ -43,7 +45,9 @@ import { NewsComponent } from './pages/news/news.component';
     EventRequestsComponent,
     EventItemCreationComponent,
     EventCreateComponent,
-    NewsComponent
+    NewsComponent,
+    StatsComponent,
+    EventResultsComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',

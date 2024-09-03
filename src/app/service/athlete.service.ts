@@ -9,7 +9,7 @@ import { ResponseDTO } from '../dto/response.dto';
 })
 export class AthleteService {
 
-  private apiUrl = 'http://localhost:8082/api/v1/athlete';
+  private apiUrl = 'http://localhost:8091/user-service/api/v1/athlete';
 
   constructor(private http: HttpClient) {}
 
@@ -25,5 +25,8 @@ export class AthleteService {
     return this.http.put<ResponseDTO<AthleteDTO>>(`${this.apiUrl}/${id}`, athleteData);
   }
 
+  getAthleteStats(): Observable<ResponseDTO<any>> {
+    return this.http.get<ResponseDTO<any>>(`${this.apiUrl}/stats`);
+  }
 
 }

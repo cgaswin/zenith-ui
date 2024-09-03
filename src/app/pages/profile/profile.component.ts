@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AthleteService } from '../../service/athlete.service';
@@ -7,12 +7,15 @@ import { CoachService } from '../../service/coach.service';
 import { AuthService } from '../../service/auth.service';
 import { AthleteDTO } from '../../dto/athlete.dto';
 import { CoachDTO } from '../../dto/coach.dto';
-import { NgFor } from '@angular/common';
+import { DatePipe, NgFor } from '@angular/common';
+import { ResultService } from '../../service/result.service';
+import { ResultDTO } from '../../dto/result.dto';
+import { UpdateProfileModalComponent } from '../../components/update-profile-modal/update-profile-modal.component';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [FormsModule,NgFor],
+  imports: [FormsModule,NgFor,DatePipe,UpdateProfileModalComponent],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })
@@ -21,15 +24,20 @@ export class ProfileComponent {
   isEditing = false;
   isOwnProfile = false;
   isAthleteViewing = false;
-  achievementsText = '';
+  performances: ResultDTO[] = [];
+  topPerformance: ResultDTO | null = null;
+  achievementsText: string = ''; // Add this line
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private athleteService: AthleteService,
     private coachService: CoachService,
-    private authService: AuthService
+    private authService: AuthService,
+    private resultService: ResultService,
+    private cdr: ChangeDetectorRef
   ) {}
+
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
@@ -50,13 +58,11 @@ export class ProfileComponent {
     });
   }
 
-  trackByIndex(index: number, item: any): number {
-    return index;
-  }
   loadProfileByType(id: string) {
-    console.log(id);
     if (id.startsWith('at')) {
       this.loadProfileDetails(id);
+      this.loadAthletePerformances(id);
+      this.loadTopPerformance(id);
     } else if (id.startsWith('ch')) {
       this.loadCoachProfile(id);
     } else {
@@ -90,8 +96,6 @@ export class ProfileComponent {
           if (this.isCoach(this.profileData)) {
             this.achievementsText = this.profileData.achievements.join('\n');
           }
-          console.log(this.achievementsText);
-          console.log(this.profileData);
         } else {
           console.error('Failed to load coach profile:', response.message);
           this.router.navigate(['/']);
@@ -104,12 +108,80 @@ export class ProfileComponent {
     });
   }
 
-  isAthlete(profile: ProfileDTO): profile is AthleteDTO {
-    return 'height' in profile && 'weight' in profile;
+  saveProfile(updatedProfile: AthleteDTO | CoachDTO) {
+    if (this.isAthlete(updatedProfile)) {
+      this.athleteService.updateAthlete(updatedProfile.id, updatedProfile).subscribe({
+        next: (response) => {
+          if (response.success) {
+            this.profileData = response.data;
+            this.isEditing = false;
+          } else {
+            console.error('Failed to update athlete profile:', response.message);
+          }
+        },
+        error: (error) => console.error('Error updating athlete profile:', error)
+      });
+    } else if (this.isCoach(updatedProfile)) {
+      // Convert achievementsText to array before updating
+
+      updatedProfile.achievements = this.achievementsText.split('\n').filter(a => a.trim() !== '');
+
+      this.coachService.updateCoach(updatedProfile.id, updatedProfile).subscribe({
+        next: (response) => {
+          if (response.success) {
+            this.profileData = response.data;
+            this.isEditing = false;
+            // Update achievementsText after successful update
+            if (this.isCoach(this.profileData)) {
+              this.achievementsText = this.profileData.achievements.join('\n');
+            
+
+            }
+          } else {
+            console.error('Failed to update coach profile:', response.message);
+          }
+        },
+        error: (error) => console.error('Error updating coach profile:', error)
+      });
+    }
   }
 
-  isCoach(profile: ProfileDTO): profile is CoachDTO {
-    return 'achievements' in profile && 'acceptingRequests' in profile;
+  loadAthletePerformances(id: string) {
+    this.resultService.getResultsByAthleteId(id).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.performances = response.data;
+        } else {
+          console.error('Failed to load athlete performances:', response.message);
+        }
+      },
+      error: (error) => {
+        console.error('Error fetching athlete performances:', error);
+      }
+    });
+  }
+
+  loadTopPerformance(id: string) {
+    this.resultService.getTopPerformanceByAthleteId(id).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.topPerformance = response.data;
+        } else {
+          console.error('Failed to load top performance:', response.message);
+        }
+      },
+      error: (error) => {
+        console.error('Error fetching top performance:', error);
+      }
+    });
+  }
+
+  isAthlete(profile: ProfileDTO | null): profile is AthleteDTO {
+    return profile !== null && 'height' in profile && 'weight' in profile;
+  }
+
+  isCoach(profile: ProfileDTO | null): profile is CoachDTO {
+    return profile !== null && 'achievements' in profile && 'acceptingRequests' in profile;
   }
 
   startEdit() {
@@ -118,49 +190,14 @@ export class ProfileComponent {
 
   cancelEdit() {
     this.isEditing = false;
-    if (this.profileData) {
-      this.loadProfileDetails(this.profileData.id);
-    }
   }
 
-  saveProfile() {
-    if (this.profileData) {
-      if (this.isAthlete(this.profileData)) {
-        this.athleteService.updateAthlete(this.profileData.id, this.profileData).subscribe({
-          next: (response) => {
-            if (response.success) {
-              this.profileData = response.data;
-              this.isEditing = false;
-            } else {
-              console.error('Failed to update athlete profile:', response.message);
-            }
-          },
-          error: (error) => console.error('Error updating athlete profile:', error)
-        });
-      } else if (this.isCoach(this.profileData)) {
-        const updatedCoach = {
-          ...this.profileData,
-          achievements: this.achievementsText.split('\n').filter(a => a.trim() !== '')
-        };
-        this.coachService.updateCoach(this.profileData.id, updatedCoach).subscribe({
-          next: (response) => {
-            if (response.success) {
-              this.profileData = response.data;
-              this.isEditing = false;
-            } else {
-              console.error('Failed to update coach profile:', response.message);
-            }
-          },
-          error: (error) => console.error('Error updating coach profile:', error)
-        });
-      }
-    }
-  }
+
+
 
   toggleAcceptingRequests() {
     if (this.profileData && this.isCoach(this.profileData)) {
-      const newStatus:boolean = !this.profileData.acceptingRequests;
-      console.log(newStatus);
+      const newStatus = !this.profileData.acceptingRequests;
       this.coachService.updateAcceptingRequests(this.profileData.id, newStatus).subscribe({
         next: (response) => {
           if (response.success) {
@@ -176,17 +213,8 @@ export class ProfileComponent {
 
   requestAssistance() {
     if (this.profileData && this.isCoach(this.profileData) && this.isAthleteViewing) {
-      // this.athleteService.requestAssistance(this.profileData.id).subscribe({
-      //   next: (response) => {
-      //     if (response.success) {
-      //       console.log('Assistance request sent successfully');
-      //     } else {
-      //       console.error('Failed to send assistance request:', response.message);
-      //     }
-      //   },
-      //   error: (error) => console.error('Error sending assistance request:', error)
-      // });
+      // Implement the request assistance functionality here
+      console.log('Requesting assistance from coach:', this.profileData.id);
     }
   }
-
 }

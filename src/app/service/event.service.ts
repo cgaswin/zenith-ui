@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ResponseDTO } from '../dto/response.dto';
 import { EventDTO, EventItemDTO, EventRegistrationDTO } from '../dto/event.dto';
-import { catchError, map, Observable, throwError } from 'rxjs';
+import { catchError, forkJoin, map, Observable, throwError,switchMap, of } from 'rxjs';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { z } from 'zod';
 
@@ -23,14 +23,7 @@ export class EventService {
     );
   }
 
-  getEventById(id: string): Observable<ResponseDTO<EventDTO>> {
-    return this.http.get<ResponseDTO<EventDTO>>(`${this.apiUrl}/event/${id}`).pipe(
-      map(response => ({
-        ...response,
-        data: EventDTO.parse(response.data)
-      }))
-    );
-  }
+
 
   createEvent(formData: FormData): Observable<ResponseDTO<EventDTO>> {
     return this.http.post<ResponseDTO<EventDTO>>(`${this.apiUrl}/event`, formData).pipe(
@@ -136,17 +129,75 @@ export class EventService {
     );
   }
 
+
+  getEventById(id: string): Observable<ResponseDTO<EventDTO>> {
+    return this.http.get<ResponseDTO<EventDTO>>(`${this.apiUrl}/event/${id}`).pipe(
+      map(response => ({
+        ...response,
+        data: EventDTO.parse(response.data)
+      })),
+      catchError(error => {
+        console.error(`Error fetching event with id ${id}:`, error);
+        return throwError(() => new Error(`Failed to fetch event with id ${id}`));
+      })
+    );
+  }
+
+  getRegistrationsByAthleteId(athleteId: string): Observable<ResponseDTO<EventRegistrationDTO[]>> {
+    return this.http.get<ResponseDTO<EventRegistrationDTO[]>>(`${this.apiUrl}/registration/athlete/${athleteId}`);
+  }
+
+  getRegisteredEventsForAthlete(athleteId: string): Observable<ResponseDTO<EventDTO[]>> {
+    return this.getRegistrationsByAthleteId(athleteId).pipe(
+      switchMap(registrationsResponse => {
+        if (registrationsResponse.success && Array.isArray(registrationsResponse.data) && registrationsResponse.data.length > 0) {
+          // Extract unique event IDs from registrations
+          const eventIds = [...new Set(registrationsResponse.data.map(reg => reg.eventId))];
+          // Fetch full event details for each unique event ID
+          return forkJoin(eventIds.map(id => this.getEventById(id))).pipe(
+            map(events => ({
+              message: "Registered events retrieved successfully",
+              success: true,
+              data: events.filter(e => e.success).map(e => e.data)
+            }))
+          );
+        } else {
+          // If no registrations found, return an observable of the empty response
+          return of({
+            message: "No registered events found",
+            success: false,
+            data: []
+          });
+        }
+      }),
+      catchError(error => {
+        console.error('Error fetching registered events:', error);
+        return of({
+          message: "An error occurred while fetching registered events",
+          success: false,
+          data: []
+        });
+      })
+    );
+  }
+
+  getEventStats(): Observable<ResponseDTO<any>> {
+    return this.http.get<ResponseDTO<any>>(`${this.apiUrl}/event/stats`);
+  }
+
   private handleError(error: HttpErrorResponse) {
-    let errorMessage = 'An unknown error occurred';
+    console.error('An error occurred:', error);
     if (error.error instanceof ErrorEvent) {
-      // Client-side error
-      errorMessage = `Error: ${error.error.message}`;
+      // A client-side or network error occurred
+      console.error('An error occurred:', error.error.message);
     } else {
-      // Server-side error
-      errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+      // The backend returned an unsuccessful response code
+      console.error(
+        `Backend returned code ${error.status}, ` +
+        `body was: ${error.error}`);
     }
-    console.error(errorMessage);
-    return throwError(() => new Error(errorMessage));
+    // Return an observable with a user-facing error message
+    return throwError(() => new Error('Something went wrong; please try again later.'));
   }
 
 

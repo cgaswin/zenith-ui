@@ -8,7 +8,7 @@ import { RegistrationResponseDTO } from '../dto/registrationResponse.dto';
   providedIn: 'root'
 })
 export class SignupService {
-  private apiUrl = `http://localhost:8085/api/v1/register`;
+  private apiUrl = `http://localhost:8091/auth-service/api/v1/register`;
 
   constructor(private http: HttpClient) {}
 

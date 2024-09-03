@@ -4,18 +4,25 @@ import { CoachDTO } from '../../dto/coach.dto';
 import { CoachService } from '../../service/coach.service';
 import { AuthService } from '../../service/auth.service';
 import { NgClass } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-coaches',
   standalone: true,
-  imports: [RouterModule,NgClass],
+  imports: [RouterModule,NgClass,FormsModule],
   templateUrl: './coaches.component.html',
   styleUrl: './coaches.component.css'
 })
 export class CoachesComponent {
   coaches: CoachDTO[] = [];
+  filteredCoaches: CoachDTO[] = [];
+  searchQuery: string = '';
 
-  constructor(private coachService: CoachService,private authService:AuthService,private router:Router) {}
+  constructor(
+    private coachService: CoachService,
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.loadCoaches();
@@ -26,13 +33,20 @@ export class CoachesComponent {
       next: (response) => {
         if (response.success) {
           this.coaches = response.data;
-          console.log(response.data)
+          this.filteredCoaches = this.coaches; // Initialize filteredCoaches with all coaches
         } else {
           console.error('Failed to load coaches:', response.message);
         }
       },
       error: (error) => console.error('Error fetching coaches:', error)
     });
+  }
+
+  onSearchChange() {
+    const query = this.searchQuery.toLowerCase();
+    this.filteredCoaches = this.coaches.filter(coach =>
+      coach.name.toLowerCase().includes(query)
+    );
   }
 
   onCoachClick(coachId: string) {
@@ -42,5 +56,4 @@ export class CoachesComponent {
       this.router.navigate(['/profile', coachId]);
     }
   }
-  
 }

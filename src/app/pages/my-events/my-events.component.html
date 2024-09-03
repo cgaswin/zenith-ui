@@ -1,0 +1,44 @@
+<div class="container mx-auto px-6 py-10">
+  <!-- Title -->
+  <h1 class="text-4xl font-bold text-gray-900 mb-12 text-center">My Events</h1>
+
+  <!-- Loading State -->
+  @if (loading) {
+    <div class="flex justify-center items-center h-64">
+      <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-600 border-solid"></div>
+    </div>
+  } @else if (error) {
+    <div class="bg-red-50 border border-red-300 text-red-800 px-6 py-4 rounded-lg shadow-lg" role="alert">
+      <strong class="font-semibold">Error:</strong>
+      <span class="block sm:inline"> {{ error }}</span>
+    </div>
+  } @else if (registeredEvents.length > 0) {
+    <!-- Event Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      @for (event of registeredEvents; track event.id) {
+        <div class="bg-white rounded-lg shadow-md overflow-hidden flex flex-col">
+          <img [src]="event.photoUrl" [alt]="event.name" class="w-full h-32 object-cover bg-gray-200">
+          <div class="p-4 flex flex-col flex-grow">
+            <h2 class="text-lg font-semibold mb-2 text-gray-900">{{ event.name }}</h2>
+            <p class="text-gray-700 text-sm mb-2">{{ event.description | slice:0:75 }}...</p>
+            <p class="text-xs text-gray-600 mb-1">Date: {{ event.date | date:'mediumDate' }}</p>
+            <p class="text-xs text-gray-600 mb-3">Venue: {{ event.venue }}</p>
+            <div class="mt-auto">
+              <a [routerLink]="['/dashboard/events', event.id]" class="block w-full bg-blue-600 hover:bg-blue-700 text-white text-center font-bold py-2 px-4 rounded-lg transition-colors duration-200">
+                View Details
+              </a>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  } @else {
+    <!-- No Events -->
+    <div class="text-center py-12">
+      <p class="text-xl text-gray-700 mb-6">You haven't registered for any events yet.</p>
+      <a routerLink="/dashboard/events" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-colors duration-200">
+        Browse Events
+      </a>
+    </div>
+  }
+</div>

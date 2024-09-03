@@ -1,38 +1,60 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { ResponseDTO } from '../dto/response.dto';
+import { ResultDTO, ResultRequestDTO } from '../dto/result.dto';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ResultService {
 
-  private apiUrl = 'http://localhost:8081/api/v1/result';
+  private apiUrl = 'http://localhost:8091/event-service/api/v1/result';
 
   constructor(private http: HttpClient) {}
 
-  createResult(resultData: any): Observable<ResponseDTO<any>> {
-    return this.http.post<ResponseDTO<any>>(`${this.apiUrl}`, resultData);
+  createBulkResults(results: ResultRequestDTO[]): Observable<ResponseDTO<ResultDTO[]>> {
+    return this.http.post<ResponseDTO<ResultDTO[]>>(`${this.apiUrl}/bulk`, results).pipe(
+      map(response => ({
+        ...response,
+        data: response.data.map(result => ResultDTO.parse(result))
+      }))
+    );
   }
 
-  getAllResults(): Observable<ResponseDTO<any[]>> {
-    return this.http.get<ResponseDTO<any[]>>(`${this.apiUrl}`);
+  getResultsByEventId(eventId: string): Observable<ResponseDTO<ResultDTO[]>> {
+    return this.http.get<ResponseDTO<ResultDTO[]>>(`${this.apiUrl}/event/${eventId}`).pipe(
+      map(response => ({
+        ...response,
+        data: response.data.map(result => ResultDTO.parse(result))
+      }))
+    );
   }
 
-  getResultById(id: string): Observable<ResponseDTO<any>> {
-    return this.http.get<ResponseDTO<any>>(`${this.apiUrl}/${id}`);
+  getResultsByEventItemId(eventItemId: string): Observable<ResponseDTO<ResultDTO[]>> {
+    return this.http.get<ResponseDTO<ResultDTO[]>>(`${this.apiUrl}/event-item/${eventItemId}`).pipe(
+      map(response => ({
+        ...response,
+        data: response.data.map(result => ResultDTO.parse(result))
+      }))
+    );
   }
 
-  getResultsByEventId(eventId: string): Observable<ResponseDTO<any[]>> {
-    return this.http.get<ResponseDTO<any[]>>(`${this.apiUrl}/event/${eventId}`);
+  getResultsByAthleteId(athleteId: string): Observable<ResponseDTO<ResultDTO[]>> {
+    return this.http.get<ResponseDTO<ResultDTO[]>>(`${this.apiUrl}/athlete/${athleteId}`).pipe(
+      map(response => ({
+        ...response,
+        data: response.data.map(result => ResultDTO.parse(result))
+      }))
+    );
   }
 
-  getResultsByEventItemId(eventItemId: string): Observable<ResponseDTO<any[]>> {
-    return this.http.get<ResponseDTO<any[]>>(`${this.apiUrl}/event-item/${eventItemId}`);
-  }
-
-  createBulkResults(results: any[]): Observable<ResponseDTO<any>> {
-    return this.http.post<ResponseDTO<any>>(`${this.apiUrl}/bulk`, results);
+  getTopPerformanceByAthleteId(athleteId: string): Observable<ResponseDTO<ResultDTO>> {
+    return this.http.get<ResponseDTO<ResultDTO>>(`${this.apiUrl}/athlete/${athleteId}/top`).pipe(
+      map(response => ({
+        ...response,
+        data: ResultDTO.parse(response.data)
+      }))
+    );
   }
 }

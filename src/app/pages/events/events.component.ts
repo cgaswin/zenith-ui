@@ -4,11 +4,12 @@ import { EventDTO } from '../../dto/event.dto';
 import { EventService } from '../../service/event.service';
 import { DatePipe } from '@angular/common';
 import { AuthService } from '../../service/auth.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-events',
   standalone: true,
-  imports: [RouterModule,DatePipe],
+  imports: [RouterModule,DatePipe,FormsModule],
   templateUrl: './events.component.html',
   styleUrl: './events.component.css'
 })
@@ -18,6 +19,8 @@ export class EventsComponent {
   isAthlete: boolean = false;
   isCoach: boolean = false;
   isLoggedIn:boolean=false;
+  filteredEvents: EventDTO[] = [];
+  searchQuery: string = '';
 
 
 
@@ -37,7 +40,9 @@ export class EventsComponent {
       next: (response) => {
         if (response.success) {
           this.events = response.data;
-          console.log(response.data)
+          // Sort events by date in descending order
+          this.events.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+          this.filteredEvents = this.events; // Initialize filteredEvents with sorted events
         } else {
           console.error('Failed to load events:', response.message);
         }
@@ -46,6 +51,12 @@ export class EventsComponent {
     });
   }
 
+  onSearchChange() {
+    const query = this.searchQuery.toLowerCase();
+    this.filteredEvents = this.events.filter(event =>
+      event.name.toLowerCase().includes(query)
+    );
+  }
 
 
 }

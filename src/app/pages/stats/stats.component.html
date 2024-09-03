@@ -1,0 +1,26 @@
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold mb-8 text-center">Statistics</h1>
+
+  @if (loading) {
+    <p class="text-center text-gray-600">Loading statistics...</p>
+  } @else if (error) {
+    <p class="text-center text-red-500">{{ error }}</p>
+  } @else {
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="bg-white p-6 rounded-lg shadow-lg">
+        <h2 class="text-xl font-semibold mb-4">Total Events: {{ stats.events.total }}</h2>
+        <canvas #eventsChart></canvas>
+      </div>
+
+      <div class="bg-white p-6 rounded-lg shadow-lg">
+        <h2 class="text-xl font-semibold mb-4">Total Athletes: {{ stats.athletes.total }}</h2>
+        <canvas #athletesChart></canvas>
+      </div>
+
+      <div class="bg-white p-6 rounded-lg shadow-lg">
+        <h2 class="text-xl font-semibold mb-4">Total Coaches: {{ stats.coaches.total }}</h2>
+        <canvas #coachesChart></canvas>
+      </div>
+    </div>
+  }
+</div>

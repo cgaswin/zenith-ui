@@ -5,10 +5,11 @@
     </div>
 
     <!-- Desktop Navigation -->
-    <nav class="hidden lg:flex flex-grow justify-center">
-      <ul class="inline-flex space-x-8">
+    <nav class="hidden lg:flex flex-grow mt-10 justify-center items-center">
+      <ul class="flex space-x-8">
         <li><a [routerLink]="['/']" class="text-sm font-semibold text-gray-800 hover:text-gray-900">Home</a></li>
         <li><a [routerLink]="['/news']" class="text-sm font-semibold text-gray-800 hover:text-gray-900">News</a></li>
+        <li><a [routerLink]="['/statistics']" class="text-sm font-semibold text-gray-800 hover:text-gray-900">Overview</a></li>
         <li><a [routerLink]="['/events']" class="text-sm font-semibold text-gray-800 hover:text-gray-900">Events</a></li>
         <li><a [routerLink]="['/athletes']" class="text-sm font-semibold text-gray-800 hover:text-gray-900">Athletes</a></li>
         <li><a [routerLink]="['/coaches']" class="text-sm font-semibold text-gray-800 hover:text-gray-900">Coaches</a></li>
@@ -17,7 +18,7 @@
     </nav>
 
     <!-- Desktop Buttons -->
-    <div class="hidden lg:flex gap-4">
+    <div class="hidden lg:flex gap-4 items-center">
       <button (click)="loginUser()" type="button" class="rounded-md bg-orange-500 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-orange-500/80">Login</button>
       <button (click)="signupUser()" type="button" class="rounded-md bg-orange-500 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-orange-500/80">Register</button>
     </div>
@@ -46,6 +47,7 @@
     <ul class="flex flex-col space-y-4 p-4">
       <li><a (click)="closeMenu()" [routerLink]="['/']" class="text-sm font-semibold text-gray-800 hover:text-gray-900">Home</a></li>
       <li><a (click)="closeMenu()" [routerLink]="['/news']" class="text-sm font-semibold text-gray-800 hover:text-gray-900">News</a></li>
+      <li><a (click)="closeMenu()" [routerLink]="['/statistics']" class="text-sm font-semibold text-gray-800 hover:text-gray-900">Overview</a></li>
       <li><a (click)="closeMenu()" [routerLink]="['/events']" class="text-sm font-semibold text-gray-800 hover:text-gray-900">Events</a></li>
       <li><a (click)="closeMenu()" [routerLink]="['/athletes']" class="text-sm font-semibold text-gray-800 hover:text-gray-900">Athletes</a></li>
       <li><a (click)="closeMenu()" [routerLink]="['/coaches']" class="text-sm font-semibold text-gray-800 hover:text-gray-900">Coaches</a></li>

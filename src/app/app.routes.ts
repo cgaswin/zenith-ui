@@ -22,6 +22,9 @@ import { EventCreateComponent } from './pages/event-create/event-create.componen
 import { EventItemCreationComponent } from './pages/event-item-creation/event-item-creation.component';
 import { EventDetailComponent } from './pages/event-detail/event-detail.component';
 import { NewsComponent } from './pages/news/news.component';
+import { StatsComponent } from './pages/stats/stats.component';
+import { MyEventsComponent } from './pages/my-events/my-events.component';
+import { EventResultsComponent } from './pages/event-results/event-results.component';
 
 
 export const routes: Routes = [
@@ -35,10 +38,12 @@ export const routes: Routes = [
       { path: 'athletes', component: AthletesComponent },
       { path: 'coaches', component: CoachesComponent },
       { path: 'results', component: ResultsComponent },
+      { path: 'results/:id', component: EventResultsComponent },
       { path: 'login', component: LoginComponent },
       { path: 'signup', component: SignupComponent },
       { path: 'news', component: NewsComponent },
       { path: 'profile/:id', component: ProfileComponent },
+      { path: 'statistics', component: StatsComponent },
     ]
   },
   {
@@ -93,12 +98,13 @@ export const routes: Routes = [
       { path: 'athletes', component: AthletesComponent },
       { path: 'coaches', component: CoachesComponent },
       { path: 'results', component: ResultsComponent },
-      // {
-      //   path: 'event-registration',
-      //   component: EventRegistrationComponent,
-      //   canActivate: [roleGuard],
-      //   data: { role: 'ADMIN' }
-      // },
+      { path: 'results/:id', component: EventResultsComponent },
+      {
+        path: 'my-events',
+        component: MyEventsComponent,
+        canActivate: [roleGuard],
+        data: { role: 'ATHLETE' }
+      },
       {
         path: 'requests',
         component: RequestsComponent,
