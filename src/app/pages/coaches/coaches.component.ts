@@ -58,9 +58,14 @@ export class CoachesComponent {
         next: (response) => {
           if (response.success && response.data) {
             this.coachingStatus = response.data;
+          } else {
+            this.coachingStatus = null;
           }
         },
-        error: (error) => console.error('Error fetching coaching status:', error)
+        error: (error) => {
+          console.error('Error fetching coaching status:', error);
+          this.coachingStatus = null;
+        }
       });
     }
   }
@@ -83,17 +88,36 @@ export class CoachesComponent {
   canRequestCoach(coach: CoachDTO): boolean {
     return coach.acceptingRequests &&
            (!this.coachingStatus ||
-           (this.coachingStatus.status !== 'APPROVED' && this.coachingStatus.status !== 'PENDING'));
+           (this.coachingStatus.status !== 'APPROVED' &&
+            this.coachingStatus.status !== 'PENDING') ||
+           (this.coachingStatus.status === 'PENDING' && this.coachingStatus.coach?.id !== coach.id));
   }
 
   requestCoach(coachId: string) {
     const athleteId = this.authService.getCurrentUserId();
+    const athleteName = this.authService.getUsername() || 'Unknown';
+
     if (athleteId) {
       this.coachService.createCoachingRequest({ athleteId, coachId }).subscribe({
         next: (response) => {
           if (response.success) {
             console.log('Coaching request sent successfully');
-            this.loadCoachingStatus();
+            const requestedCoach = this.coaches.find(c => c.id === coachId);
+
+            // Update the local coachingStatus immediately
+            this.coachingStatus = {
+              id: response.data.id, // Assuming the response includes the new request ID
+              status: 'PENDING',
+              coach: {
+                id: coachId,
+                name: requestedCoach?.name || 'Unknown'
+              },
+              athlete: {
+                id: athleteId,
+                name: athleteName
+              },
+              requestDate: new Date().toISOString() // Optional, you can include this if needed
+            };
           } else {
             console.error('Failed to send coaching request:', response.message);
           }

@@ -1,47 +1,61 @@
 <div class="container mx-auto px-4 py-8">
   <h1 class="text-3xl font-bold mb-6">Coaches</h1>
+
+  <!-- Search input -->
   <div class="mb-6">
     <input
       type="text"
       placeholder="Search by name..."
       [(ngModel)]="searchQuery"
       (input)="onSearchChange()"
-      class="w-full px-3 py-2 border border-gray-300 rounded-lg"
+      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
     />
   </div>
 
+  <!-- Coaches grid -->
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
     @for (coach of filteredCoaches; track coach.id) {
-      <div class="bg-white rounded-lg shadow-md overflow-hidden">
+      <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+        <!-- Coach image -->
         <img [src]="coach.photoUrl || 'assets/default-avatar.png'"
              [alt]="coach.name"
-             class="w-full h-32 object-cover bg-gray-200">
+             class="w-full h-48 object-cover bg-gray-200">
+
+        <!-- Coach details -->
         <div class="p-4">
-          <h2 class="text-lg font-semibold mb-2">{{ coach.name }}</h2>
+          <h2 class="text-xl font-semibold mb-2">{{ coach.name }}</h2>
           <p class="text-gray-600 text-sm mb-2">{{ coach.category }}</p>
-          <p class="text-sm" [ngClass]="{'text-green-600': coach.acceptingRequests, 'text-red-600': !coach.acceptingRequests}">
+
+          <!-- Accepting requests status -->
+          <p class="text-sm mb-3" [ngClass]="{'text-green-600': coach.acceptingRequests, 'text-red-600': !coach.acceptingRequests}">
             {{ coach.acceptingRequests ? 'Accepting Requests' : 'Not Accepting Requests' }}
           </p>
 
+          <!-- Request coach button or status for athletes -->
           @if (isAthlete()) {
-            @if (coachingStatus?.coach?.id === coach.id) {
-              <p class="text-green-600 font-semibold mt-2">Your current coach</p>
-            } @else if (coachingStatus?.status === 'PENDING') {
-              <p class="text-yellow-600 font-semibold mt-2">Request pending</p>
+            @if (coachingStatus && coachingStatus.coach && coachingStatus.coach.id === coach.id) {
+              @if (coachingStatus.status === 'APPROVED') {
+                <p class="text-green-600 font-semibold mb-3">Your current coach</p>
+              } @else if (coachingStatus.status === 'PENDING') {
+                <p class="text-yellow-600 font-semibold mb-3">Request pending</p>
+              }
             } @else if (canRequestCoach(coach)) {
               <button (click)="requestCoach(coach.id)"
-                      class="bg-blue-500 text-white px-4 py-2 rounded mt-2 hover:bg-blue-600">
+                      class="w-full bg-blue-500 text-white px-4 py-2 rounded mb-3 hover:bg-blue-600 transition-colors duration-300">
                 Request Coach
               </button>
             }
           }
 
+          <!-- View profile button -->
           <button (click)="onCoachClick(coach.id)"
-                  class="bg-gray-200 text-gray-700 px-4 py-2 rounded mt-2 hover:bg-gray-300">
+                  class="w-full bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 transition-colors duration-300">
             View Profile
           </button>
         </div>
       </div>
+    } @empty {
+      <p class="col-span-full text-center text-gray-500 py-8">No coaches found.</p>
     }
   </div>
 </div>

@@ -56,4 +56,8 @@ export class AuthService {
   getCurrentUserId(): string | null {
     return localStorage.getItem('roleId');
   }
+
+  getUsername(): string | null {
+    return localStorage.getItem('username');
+  }
 }
