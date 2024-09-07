@@ -53,5 +53,4 @@ import { EventResultsComponent } from './pages/event-results/event-results.compo
   styleUrl: './app.component.css',
 })
 export class AppComponent {
-  title = 'zenith-ui';
 }
