@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class NewsService {
 
-  private apiUrl = `https://newsapi.org/v2/top-headlines?country=in&category=sports&apiKey=6fd2dc5a819c44bf892a775cdf0d5ce6`;
+  private apiUrl = `https://newsapi.org/v2/top-headlines?q=sports&apiKey={API_KEY}`;
 
   constructor(private http: HttpClient) { }
 
