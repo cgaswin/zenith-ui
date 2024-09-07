@@ -32,7 +32,7 @@ export class AthleteService {
   }
 
 
-  getCoachingStatus(athleteId: string): Observable<ResponseDTO<CoachingRequestResponseDTO | null>> {
-    return this.http.get<ResponseDTO<CoachingRequestResponseDTO | null>>(`${this.apiUrl}/${athleteId}/coaching-status`);
+  getCoachingStatus(athleteId: string): Observable<ResponseDTO<CoachingRequestResponseDTO[]>> {
+    return this.http.get<ResponseDTO<CoachingRequestResponseDTO[]>>(`${this.apiUrl}/${athleteId}/coaching-status`);
   }
 }

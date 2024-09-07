@@ -1,3 +1,4 @@
+<!-- coaches.component.html -->
 <div class="container mx-auto px-4 py-8">
   <h1 class="text-3xl font-bold mb-6">Coaches</h1>
 
@@ -12,7 +13,6 @@
     />
   </div>
 
-  <!-- Coaches grid -->
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
     @for (coach of filteredCoaches; track coach.id) {
       <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
@@ -33,17 +33,15 @@
 
           <!-- Request coach button or status for athletes -->
           @if (isAthlete()) {
-            @if (coachingStatus && coachingStatus.coach && coachingStatus.coach.id === coach.id) {
-              @if (coachingStatus.status === 'APPROVED') {
-                <p class="text-green-600 font-semibold mb-3">Your current coach</p>
-              } @else if (coachingStatus.status === 'PENDING') {
-                <p class="text-yellow-600 font-semibold mb-3">Request pending</p>
-              }
+            @if (isRequestPending(coach.id)) {
+              <p class="text-yellow-600 font-semibold mb-3">Request pending</p>
             } @else if (canRequestCoach(coach)) {
               <button (click)="requestCoach(coach.id)"
                       class="w-full bg-blue-500 text-white px-4 py-2 rounded mb-3 hover:bg-blue-600 transition-colors duration-300">
                 Request Coach
               </button>
+            } @else if (assignedCoachId === coach.id) {
+              <p class="text-green-600 font-semibold mb-3">Your Coach</p>
             }
           }
 

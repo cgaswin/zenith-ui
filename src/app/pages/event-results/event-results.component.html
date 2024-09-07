@@ -4,27 +4,30 @@
     <p class="text-center">Loading results...</p>
   } @else if (error) {
     <p class="text-center text-red-500">{{ error }}</p>
-  } @else if (results.length) {
-    <table class="w-full border-collapse border border-gray-300">
-      <thead>
-        <tr class="bg-gray-100">
-          <th class="border border-gray-300 px-4 py-2">Athlete</th>
-          <th class="border border-gray-300 px-4 py-2">Event Item</th>
-          <th class="border border-gray-300 px-4 py-2">Score</th>
-          <th class="border border-gray-300 px-4 py-2">Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (result of results; track result.id) {
-          <tr>
-            <td class="border border-gray-300 px-4 py-2">{{ result.athleteId }}</td>
-            <td class="border border-gray-300 px-4 py-2">{{ result.eventItemName }}</td>
-            <td class="border border-gray-300 px-4 py-2">{{ result.score }}</td>
-            <td class="border border-gray-300 px-4 py-2">{{ result.publishedDate | date:'dd/MM/yyyy' }}</td>
-          </tr>
-        }
-      </tbody>
-    </table>
+  } @else if (getEventItems().length) {
+    @for (eventItem of getEventItems(); track eventItem) {
+      <div class="mb-8">
+        <h2 class="text-2xl font-semibold mb-4">{{ eventItem }}</h2>
+        <table class="w-full border-collapse border border-gray-300">
+          <thead>
+            <tr class="bg-gray-100">
+              <th class="border border-gray-300 px-4 py-2">Athlete</th>
+              <th class="border border-gray-300 px-4 py-2">Score</th>
+              <th class="border border-gray-300 px-4 py-2">Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (result of getResultsForEventItem(eventItem); track result.id) {
+              <tr>
+                <td class="border border-gray-300 px-4 py-2">{{ result.athleteId }}</td>
+                <td class="border border-gray-300 px-4 py-2">{{ result.score }}</td>
+                <td class="border border-gray-300 px-4 py-2">{{ result.publishedDate | date:'dd/MM/yyyy' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
   } @else {
     <p class="text-center">No results found for this event.</p>
   }

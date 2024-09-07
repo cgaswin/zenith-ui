@@ -83,7 +83,7 @@ export const routes: Routes = [
         path: 'events/create',
         component: EventCreateComponent,
         canActivate: [roleGuard],
-        data: { role: 'ADMIN' }
+        data: { role: 'ADMIN' },
       },
       {
         path: 'events/:id/items',

@@ -7,7 +7,8 @@ import { NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CoachingStatusDTO } from '../../dto/coachingStatus.dto';
 import { AthleteService } from '../../service/athlete.service';
-import { CoachingRequestResponseDTO } from '../../dto/coachingRequestResponse.dto';
+import { CoachingRequestResponseDTO, CoachingRequestResponseSchema } from '../../dto/coachingRequestResponse.dto';
+import { z } from 'zod';
 
 @Component({
   selector: 'app-coaches',
@@ -20,8 +21,9 @@ export class CoachesComponent {
   coaches: CoachDTO[] = [];
   filteredCoaches: CoachDTO[] = [];
   searchQuery: string = '';
-  coachingStatus: CoachingRequestResponseDTO | null = null;
-
+  coachingRequests: CoachingRequestResponseDTO[] = [];
+  pendingRequests: Set<string> = new Set();
+  assignedCoachId: string | null = null;
 
   constructor(
     private coachService: CoachService,
@@ -33,7 +35,7 @@ export class CoachesComponent {
   ngOnInit() {
     this.loadCoaches();
     if (this.isAthlete()) {
-      this.loadCoachingStatus();
+      this.loadCoachingRequests();
     }
   }
 
@@ -51,23 +53,49 @@ export class CoachesComponent {
     });
   }
 
-  loadCoachingStatus() {
+  loadCoachingRequests() {
     const athleteId = this.authService.getCurrentUserId();
     if (athleteId) {
       this.athleteService.getCoachingStatus(athleteId).subscribe({
         next: (response) => {
           if (response.success && response.data) {
-            this.coachingStatus = response.data;
+            try {
+              if (Array.isArray(response.data)) {
+                this.coachingRequests = z.array(CoachingRequestResponseSchema).parse(response.data);
+              } else {
+                const singleRequest = CoachingRequestResponseSchema.parse(response.data);
+                this.coachingRequests = [singleRequest];
+              }
+              this.updatePendingRequests();
+              this.checkAssignedCoach();
+            } catch (error) {
+              console.error('Error parsing coaching request data:', error);
+              this.coachingRequests = [];
+            }
           } else {
-            this.coachingStatus = null;
+            this.coachingRequests = [];
           }
         },
         error: (error) => {
-          console.error('Error fetching coaching status:', error);
-          this.coachingStatus = null;
+          console.error('Error fetching coaching requests:', error);
+          this.coachingRequests = [];
         }
       });
     }
+  }
+
+  updatePendingRequests() {
+    this.pendingRequests.clear();
+    this.coachingRequests.forEach(request => {
+      if (request.status === 'PENDING') {
+        this.pendingRequests.add(request.coach.id);
+      }
+    });
+  }
+
+  checkAssignedCoach() {
+    const assignedRequest = this.coachingRequests.find(request => request.status === 'APPROVED');
+    this.assignedCoachId = assignedRequest ? assignedRequest.coach.id : null;
   }
 
   onSearchChange() {
@@ -78,46 +106,30 @@ export class CoachesComponent {
   }
 
   onCoachClick(coachId: string) {
-    if (this.authService.isLoggedIn()) {
-      this.router.navigate(['/dashboard/profile', coachId]);
-    } else {
-      this.router.navigate(['/profile', coachId]);
-    }
+    this.router.navigate(['/dashboard/profile', coachId]);
+  }
+
+  isAthlete(): boolean {
+    return this.authService.getUserRole() === 'ATHLETE';
   }
 
   canRequestCoach(coach: CoachDTO): boolean {
-    return coach.acceptingRequests &&
-           (!this.coachingStatus ||
-           (this.coachingStatus.status !== 'APPROVED' &&
-            this.coachingStatus.status !== 'PENDING') ||
-           (this.coachingStatus.status === 'PENDING' && this.coachingStatus.coach?.id !== coach.id));
+    return coach.acceptingRequests && !this.assignedCoachId && !this.pendingRequests.has(coach.id);
+  }
+
+  isRequestPending(coachId: string): boolean {
+    return this.pendingRequests.has(coachId);
   }
 
   requestCoach(coachId: string) {
     const athleteId = this.authService.getCurrentUserId();
-    const athleteName = this.authService.getUsername() || 'Unknown';
-
     if (athleteId) {
       this.coachService.createCoachingRequest({ athleteId, coachId }).subscribe({
         next: (response) => {
           if (response.success) {
-            console.log('Coaching request sent successfully');
-            const requestedCoach = this.coaches.find(c => c.id === coachId);
-
-            // Update the local coachingStatus immediately
-            this.coachingStatus = {
-              id: response.data.id, // Assuming the response includes the new request ID
-              status: 'PENDING',
-              coach: {
-                id: coachId,
-                name: requestedCoach?.name || 'Unknown'
-              },
-              athlete: {
-                id: athleteId,
-                name: athleteName
-              },
-              requestDate: new Date().toISOString() // Optional, you can include this if needed
-            };
+            this.pendingRequests.add(coachId);
+            // Refresh coaching requests after successful request
+            this.loadCoachingRequests();
           } else {
             console.error('Failed to send coaching request:', response.message);
           }
@@ -125,9 +137,5 @@ export class CoachesComponent {
         error: (error) => console.error('Error sending coaching request:', error)
       });
     }
-  }
-
-  isAthlete(): boolean {
-    return this.authService.getUserRole() === 'ATHLETE';
   }
 }

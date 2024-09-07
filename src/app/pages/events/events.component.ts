@@ -42,7 +42,7 @@ export class EventsComponent {
           this.events = response.data;
           // Sort events by date in descending order
           this.events.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-          this.filteredEvents = this.events; // Initialize filteredEvents with sorted events
+          this.filteredEvents = this.events;
         } else {
           console.error('Failed to load events:', response.message);
         }

@@ -13,7 +13,8 @@ import { DatePipe } from '@angular/common';
 })
 export class EventResultsComponent {
 
-  results: ResultDTO[] = [];
+  groupedResults: { [key: string]: ResultDTO[] } = {};
+  eventItems: string[] = [];
   loading: boolean = true;
   error: string | null = null;
 
@@ -37,7 +38,9 @@ export class EventResultsComponent {
       next: (response) => {
         this.loading = false;
         if (response.success) {
-          this.results = response.data;
+          this.groupResults(response.data);
+          console.log(response)
+          this.eventItems = Object.keys(this.groupedResults);
         } else {
           this.error = response.message || 'Failed to load results';
         }
@@ -48,5 +51,24 @@ export class EventResultsComponent {
         console.error('Error loading results:', error);
       }
     });
+  }
+
+  groupResults(results: ResultDTO[]) {
+    this.groupedResults = results.reduce((acc, result) => {
+      const key = result.eventItemName || 'Unknown Event Item';
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      acc[key].push(result);
+      return acc;
+    }, {} as { [key: string]: ResultDTO[] });
+  }
+
+  getEventItems(): string[] {
+    return this.eventItems;
+  }
+
+  getResultsForEventItem(eventItem: string): ResultDTO[] {
+    return this.groupedResults[eventItem] || [];
   }
 }

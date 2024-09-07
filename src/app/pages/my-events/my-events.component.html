@@ -8,9 +8,8 @@
       <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-600 border-solid"></div>
     </div>
   } @else if (error) {
-    <div class="bg-red-50 border border-red-300 text-red-800 px-6 py-4 rounded-lg shadow-lg" role="alert">
-      <strong class="font-semibold">Error:</strong>
-      <span class="block sm:inline"> {{ error }}</span>
+    <div class=" px-6 py-4 rounded-lg">
+      <strong class="font-semibold">No event Registrations Found</strong>
     </div>
   } @else if (registeredEvents.length > 0) {
     <!-- Event Grid -->
