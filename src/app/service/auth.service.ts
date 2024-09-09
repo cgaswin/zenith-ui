@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { LoginResponseDTO } from '../dto/loginResponse.dto';
 import { BehaviorSubject } from 'rxjs';
 import { Router } from '@angular/router';
+import {jwtDecode} from "jwt-decode"
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,7 @@ export class AuthService {
   }
 
   private checkAuthStatus(): void {
-    const token = localStorage.getItem('token');
+    const token = this.getValidToken();
     this._isLoggedIn.next(!!token);
   }
 
@@ -50,7 +51,7 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return !!this.getToken();
+    return !!this.getValidToken();
   }
 
   getCurrentUserId(): string | null {
@@ -59,5 +60,27 @@ export class AuthService {
 
   getUsername(): string | null {
     return localStorage.getItem('username');
+  }
+
+  isTokenExpired(): boolean {
+    const token = this.getToken();
+    if (!token) return true;
+
+    try {
+      const decodedToken: any = jwtDecode(token);
+      const currentTime = Date.now() / 1000; // Convert to seconds
+      return decodedToken.exp < currentTime;
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      return true; // Treat as expired if there's an error
+    }
+  }
+
+  getValidToken(): string | null {
+    if (this.isTokenExpired()) {
+      this.logout(); // Logout if token is expired
+      return null;
+    }
+    return this.getToken();
   }
 }
